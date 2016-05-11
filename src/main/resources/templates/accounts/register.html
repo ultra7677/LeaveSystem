@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource | Register</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/register.css}"></link>
+</head>
+<body>
+	<nav class="navbar navbar-default"></nav>
+	<div class="panel panel-default action-panel">
+		<div class="panel-heading" th:text="#{login.form.title}"></div>
+		<div class="panel-body">
+			<form class="panel-form" action="#" th:action="@{/user/register}" th:object="${registerForm}" method="POST">
+				<ul class="form-error-message" th:if="${#fields.hasGlobalErrors()}"> 
+					<li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+				</ul>
+				<div class="input-field-group" th:classappend="${#fields.hasErrors('firstName')}? 'error' : ''">
+					<div class="input-label " th:text="#{register.form.label.firstName}"></div>
+					<input name="firstName" class="input-field " type="text" th:field="*{firstName}" th:placeholder="#{register.form.placeholder.firstName}" />
+					<div class="input-field-error-message" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+				</div>
+
+				<div class="input-field-group" th:classappend="${#fields.hasErrors('lastName')}? 'error' : ''">
+					<div class="input-label " th:text="#{register.form.label.lastName}"></div>
+					<input name="lastName" class="input-field " type="text" th:field="*{lastName}" th:placeholder="#{register.form.placeholder.lastName}" />
+					<div class="input-field-error-message" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+				</div>
+
+				<div class="input-field-group" th:classappend="${#fields.hasErrors('email')}? 'error' : ''">
+					<div class="input-label " th:text="#{register.form.label.email}"></div>
+					<input name="email" class="input-field " type="text" th:field="*{email}" th:placeholder="#{register.form.placeholder.email}" />
+					<div class="input-field-error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+				</div>
+
+				<div class="input-field-group" th:classappend="${#fields.hasErrors('password')}? 'error' : ''">
+					<div class="input-label " th:text="#{register.form.label.password}"></div>
+					<input name="password" class="input-field " type="password" th:field="*{password}" th:placeholder="#{register.form.placeholder.password}" />
+					<div class="input-field-error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+				</div>
+
+				<div class="input-field-group" th:classappend="${#fields.hasErrors('repeatPassword')}? 'error' : ''">
+					<div class="input-label " th:text="#{register.form.label.repeatPassword}"></div>
+					<input name="repeatPassword" class="input-field " type="password" th:field="*{repeatPassword}" th:placeholder="#{register.form.placeholder.repeatPassword}" />
+					<div class="input-field-error-message" th:if="${#fields.hasErrors('repeatPassword')}" th:errors="*{repeatPassword}"></div>
+				</div>
+
+				<input class="btn btn-xlarge register" type="submit" th:value="#{register.form.button.register}" />
+			</form>
+			<div class="useful-links">
+				<div class="forget-password ">
+					<a href="#" th:text="#{register.link.forgotpassword}"></a>
+				</div>
+				<div class="login">
+					<a th:href="@{login.html}" th:text="#{register.link.login}"></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

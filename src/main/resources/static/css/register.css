@@ -1,0 +1,22 @@
+body {
+  background-image: url("/imgs/bg.jpg");
+}
+
+.btn.register{
+  margin-top: 20px;
+}
+
+.useful-links .forget-password {
+  width: 50%;
+  float: left;
+}
+
+.useful-links .login {
+  width: 50%;
+  float: right;
+  text-align: right;
+}
+
+.useful-links{
+  margin-top: 10px;
+}

@@ -1,0 +1,23 @@
+
+#####Problem 8.8  
+Separation of concerns is a design concept based on divide-and-conquer strategy. By breaking big problems into independent smaller pieces and then solving them independently, a problem takes less effort to solve.  
+
+There is no denying that at some cases devide-and-conquer is not a approperiate strategy, especially when a problem can not be separated into independent pieces. For example, we can not apply devide-and-conquer strategy in 0-1 knapsack problem. Futhermore, if we separate a problem into too many pieces, the cost of integrating those pieces also increases significantly, in that case, too much modularity leads to a great total development cost.    
+
+#####Problem 8.11  
+Coupling is an indication of interconnection among modules in a software structure. We always want our software with lowest possible couping, which means the interaction between modules is simple and easy to understand.  
+It is obvious that for a software, less couping is usually associate with high portability, because we have a generalized abstraction between application logic and system interfaces, so that we can easilly add new modules to satisfiy our purpose and make our software suitable for different environments.
+
+#####Problem 8.12  
+level1:  
+Input: A numeric RMB amount  
+Output: Capital amount required on the check   
+
+level2:  
+Input: A positive integer represent RMB amount  
+Output: Capital amount required on the check is printed in Chinese  
+
+level3:  
+Input: A positive integer with proper range represent RMB amount  
+Output: Use “壹、贰、叁、肆、伍、陆、柒、捌、玖、拾、佰、仟、万” as capital numeric amount on the check  
+

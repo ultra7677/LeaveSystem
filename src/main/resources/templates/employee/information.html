@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/employee.css}"></link>
+<script type="text/javascript">
+
+</script>
+</head>
+
+<body class="employee information">
+<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li class="active"><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+</nav>
+<div class="page-body">
+
+	<div class="panel panel-default">
+		<div class="panel-heading">Employee Information</div>
+		<div class="panel-body">
+  			<div class="media-left media-middle"> 			
+      			<img class="media-object" th:src="'/getImage/'+${employeeInfoForm.avatarId}" src="/imgs/avatar.jpg" alt="avatar" height="100" width="100"> </img>
+  			</div>
+
+  			<div class="media-body">
+				<table class="table">
+  					<thead>
+					<tr>
+						<th>
+							<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+							<span th:text="#{employee.info.name}"></span>
+							<span th:if="${employeeInfoForm.name != null}" th:text="${employeeInfoForm.name}"></span>
+						</th>
+						<th>
+							<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+							<span th:text="#{employee.info.email}"></span>
+							<span th:if="${employeeInfoForm.email != null}" th:text="${employeeInfoForm.email}"></span>
+						</th>
+  					</tr>
+					<tr>
+						<th>
+							<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
+							<span th:text="#{employee.info.tel}"></span>
+							<span th:if="${employeeInfoForm.phoneNumber != null}" th:text="${employeeInfoForm.phoneNumber}"></span>
+						</th>
+						<th>
+							<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+							<span th:text="#{employee.info.birthdate}"></span>
+							<span th:if="${employeeInfoForm.birthDate != null}" th:text="${employeeInfoForm.birthDate}"></span>
+						</th>
+  					</tr>
+  					<tr>
+  						<th>
+  						    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+							<span th:text="#{employee.info.department}"></span>
+							<span th:if="${employeeInfoForm.department != null}" th:text="${employeeInfoForm.department}"></span>
+  					    </th>
+  					    <th>
+  					        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+  					    	<span th:text="#{employee.info.position}"></span>
+  					    	<span th:if="${employeeInfoForm.position != null}" th:text="${employeeInfoForm.position}"></span>
+  					    </th>
+  					</tr>
+  					<tr>
+  					    <th>
+  					        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+							<span th:text="#{employee.info.gender}"></span>
+							<span th:if="${employeeInfoForm.gender != null}" th:text="${employeeInfoForm.gender}"></span>
+  					    </th>
+  					    <th>
+  					        <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+							<span th:text="#{employee.info.entrydate}"></span>
+							<span th:if="${employeeInfoForm.entryDate != null}" th:text="${employeeInfoForm.entryDate}"></span>
+  					    </th>
+  					</tr>
+					</thead>
+				</table>
+  			</div>
+  			<div class= "media-right">
+  				<a  href="#" th:href="@{/edit.html}" role="button" class="btn btn-default btn-xs"> Edit</a>
+  			</div>
+  		</div>
+	</div>
+</div>
+</body>
+</html>

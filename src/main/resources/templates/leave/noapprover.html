@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+</head>
+<body class="page overview" th:object="${overviewPage}">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li class="active"><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-body">
+		<p th:text="#{leave.request.withoutapprover}"></p>
+	</div>
+</body>
+</html>

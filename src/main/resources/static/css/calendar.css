@@ -1,0 +1,182 @@
+.page.calendar .calendar-container {
+  min-width: 1200px;
+  margin: 0 auto;
+  float: left;
+  width: 80%;
+}
+
+.page.calendar .holiday-summary {
+  float: left;
+  width: 20%;
+}
+
+.page.calendar .month {
+  min-height: 320px;
+  margin-bottom : 20px;
+}
+
+.page.calendar .month .container {
+  width: 370px;
+  padding: 0;
+}
+
+.page.calendar .month:nth-child(3n+1) {
+  clear: both;
+}
+
+.page.calendar .month-header {
+  height: 40px;
+  line-height: 38px;
+  border-bottom: 2px solid cadetblue;
+  color: cadetblue;
+  font-weight: bold;
+  padding: 0 5px;
+}
+
+.page.calendar .week {
+  clear: both;
+  display: block;
+  height: 50px;
+  position: relative;
+  border-bottom: 1px solid #ccc;
+}
+
+.page.calendar .week.header {
+  height: 30px;
+  line-height: 30px;
+}
+
+.page.calendar .day {
+  width: 50px;
+  height: 100%;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+}
+
+.page.calendar .day-container {
+  position: relative;
+  height: 100%;
+}
+
+.page.calendar .day-container .date-text {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  line-height: 50px;
+}
+
+.page.calendar .day-container.today {
+  font-size: 8px;
+  bottom: 0;
+  top: 0px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: cadetblue;
+}
+
+.page.calendar .day-container[holiday="COMPANY"] {
+  background: #ebccd1;
+}
+
+.page.calendar .day-container[holiday="NATIONALITY"] {
+  background: #a94442;
+}
+
+.page.calendar .day[dayofweek="SUNDAY"] {
+  left: 0;
+}
+
+.page.calendar .day[dayofweek="MONDAY"] {
+  left: 50px;
+}
+
+.page.calendar .day[dayofweek="TUESDAY"] {
+  left: 100px;
+}
+
+.page.calendar .day[dayofweek="WEDNESDAY"] {
+  left: 150px;
+}
+
+.page.calendar .day[dayofweek="THURSDAY"] {
+  left: 200px;
+}
+
+.page.calendar .day[dayofweek="FRIDAY"] {
+  left: 250px;
+}
+
+.page.calendar .day[dayofweek="SATURDAY"] {
+  left: 300px;
+}
+
+.page.calendar .legend {
+  margin-top: 20px;
+}
+
+.page.calendar .legend-item {
+  height: 30px;
+}
+
+.page.calendar .legend-item .color {
+  float: left;
+  width: 30px;
+  height: 20px;
+  margin: 5px 0;
+}
+
+.page.calendar .legend-item .text {
+  padding: 0 10px;
+  line-height: 30px;
+  float: left;
+}
+
+.page.calendar .legend-item.nationality .color {
+  background: #a94442;
+}
+
+.page.calendar .legend-item.company .color {
+  background: #ebccd1;
+}
+
+.page.calendar .legend-item.today .color {
+  background: cadetblue;
+}
+
+.page.calendar .holidays-list {
+  margin-top: 50px;
+}
+
+.page.calendar .holidays-list li {
+  height: 30px;
+  line-height: 30px;
+}
+
+.page.calendar .holidays-list .color {
+  float: left;
+  width: 30px;
+  height: 20px;
+  margin: 5px 0;
+}
+
+.page.calendar .holidays-list .color[holiday="COMPANY"] {
+  background: #ebccd1;
+}
+
+.page.calendar .holidays-list .color[holiday="NATIONALITY"] {
+  background: #a94442;
+}
+
+.page.calendar .holidays-list .date {
+  float: left;
+  padding: 0 10px;
+}
+
+.page.calendar .holidays-list .name {
+  float: left;
+  padding: 0 10px;
+}

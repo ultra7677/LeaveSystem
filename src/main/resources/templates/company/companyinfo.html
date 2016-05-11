@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<script type="text/javascript">
+
+var avatarUrl = "";
+
+function uploadImg(input) {
+		if (input.files[0]) {
+		    var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#companyImage')
+                    .attr('src', e.target.result)
+                    .width(100)
+                    .height(100);
+                $.ajax({
+                    url : "addLogo",
+                    type: "POST",
+                    data: {filename:input.files[0].name,data:e.target.result},
+                    success: function() {
+                		    //location.reload();   
+                }
+            });
+        avatarUrl = "/imgs/"+input.files[0].name;
+    };
+    reader.readAsDataURL(input.files[0]);
+	}
+}
+
+var isButtonExist = false;
+var lastButtonIndex;
+
+$(document).on('mouseenter', '.departmentInfo', function (e) {
+    //alert('over'+this.id);
+
+    if(isButtonExist) 
+       $('#editButton'+lastButtonIndex).remove();
+
+    var offset = 13 + (this.id - 1)*31;
+
+    var r = $('<button/>',
+    {
+        type:'button',
+        class:'btn btn-default btn-xs',
+        id:'editButton'+this.id,
+        'data-toggle':'modal',
+        'data-target':'#editDepartment',
+        'data-whatver':this.id,
+        'style':'margin-top:'+offset+'px',
+        text:'Edit'
+    })
+
+    $('#media-department-right')
+        .append(r);
+
+    isButtonExist = true;
+    lastButtonIndex = this.id;
+});
+
+
+$(document).on('mouseleave', '.panel-body', function (e) {
+  $('#editButton'+lastButtonIndex).remove();
+  isButtonExist = false;
+});
+
+$(document).on('show.bs.modal','#editDepartment',function (event){
+   var button = $(event.relatedTarget);
+   var id = button.data('whatver');
+   var modal = $(this);
+   var name = $('#departmentNameField'+id).text();
+   modal.find('input#id.form-control').val(id);
+   modal.find('input#name.form-control').val(name);
+ });
+
+
+</script>
+</head>
+
+<body class="company information">
+
+<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+</nav>
+
+
+<!-- Modal Edit Company -->
+<div class="modal fade" id="editCompany" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" th:text="#{company.info.header}"></h4>
+      </div>
+      <div class="modal-body">
+      		<form class="edit-info-form" action="#" th:action="@{/editCompanyInfoForm}" th:object="${companyInfoForm}" method="POST">
+	  		  	<div class="input-field-group">
+					<div class="input-label" th:text="#{company.info.logo}"></div>
+					<img id = "companyImage" class="media-object"  th:src="'/getLogo/'+${companyInfoForm.avatarId}"  src="/imgs/avatar.jpg" alt="avatar" height="100" width="100"> </img>
+					<input class="input-avatar" type="file" accept="image/*" onchange="uploadImg(this);"/>
+				</div>
+				<div class="input-field-group">
+					<div class="input-label" th:text="#{company.info.name}"></div>
+					<input class="form-control" type="text" th:field="*{name}" th:value="${companyInfoForm.name}"/>
+				</div>
+  				<button type="submit" class="btn btn-primary" th:text="#{common.button.save}"></button>
+      		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Add Department -->
+<div class="modal fade" id="addDepartment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" th:text="#{company.info.department}"></h4>
+      </div>
+      <div class="modal-body">
+          <form class="edit-info-form" action="#" th:action="@{/addDepartment}" th:object="${departmentInfoForm}" method="POST">
+              <div class="input-field-group">
+                  <div class="input-label" th:text="#{company.info.departmentname0}"></div>
+                  <input class="form-control" type="text" th:field="*{name}"/>
+              </div>
+              <button type="submit" class="btn btn-primary" th:text="#{common.button.add}"></button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Department -->
+<div class="modal fade" id="editDepartment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" th:text="#{company.info.editdepartment}"></h4>
+      </div>
+      <div class="modal-body">
+          <form class="edit-info-form" action="#" th:action="@{/editDepartment}" th:object="${departmentInfoForm}" method="POST">
+              <div class="input-field-group">
+                  <div class="input-label" th:text="#{company.info.departmentname0}"></div>
+                  <input class="form-control" type="text"  th:name="name" th:id="name"/>
+              </div>
+              <div class="input-field-group">
+                  <input class="form-control" type="hidden"  th:name="id" th:id="id"/>
+              </div>
+              <button type="submit" class="btn btn-primary" th:text="#{common.button.save}"></button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+	<div class="panel panel-default">
+		<div class="panel-heading" th:text="#{company.info.header}"></div>
+		<div class="panel-body">
+  			<div class="media">
+ 				<div class="media-body">
+ 					<table class="table">
+ 					<thead>
+ 						<tr>
+ 							<th>
+    						<span th:text="#{company.info.name}"></span>
+    						<span th:text="${companyInfoForm.name}"></span>
+    					</th>
+ 						</tr>
+ 						<tr>
+ 							<th>
+  				  			<span th:text="#{company.info.logo}"></span>
+  				  			<img class="media-object" th:src="'/getLogo/'+${companyInfoForm.avatarId}"  src="/imgs/avatar.jpg" alt="avatar" height="100" width="100"> </img>
+  						</th>
+  					</tr>
+  				</thead>
+ 					</table>
+ 				</div>
+  				<div class= "media-right">
+  					<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#editCompany"> Edit</button>
+  				</div>
+			</div>    
+		</div>
+	</div>
+
+  <div class="panel panel-default" th:object = "${departmentInfoForm.getDepartments()}">
+      <div class="panel-heading" th:text="#{company.info.department}"> </div>
+      <div class="panel-body">
+        <div class="media">
+          <div class="media-body">
+           <table class="table table-condensed">
+             <thead>
+                <tr>
+                  <th th:text="#{company.info.departmentname1}"></th>
+               </tr>
+              </thead>
+              <tbody id="table-body" >
+                <tr class="departmentInfo" th:each = "it : ${departmentInfoForm.getDepartments()}" th:id="${it.getId()}">
+                  <td>
+                   <span th:id = "departmentNameField+${it.getId()}" th:text="${it.getName()}"> </span>
+                 </td>
+                </tr>   
+              </tbody>
+            </table>
+          </div>
+          <div class= "media-right" id="media-department-right">
+            <button id="editButton0" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addDepartment">Add</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+</body>
+</html>

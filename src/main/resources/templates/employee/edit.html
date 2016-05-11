@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/employee.css}"></link>
+<script type="text/javascript">
+    var avatarUrl = "";
+
+	function uploadImg(input) {
+		 if (input.files[0]) {
+		 	//alert(input.files[0].name);
+		 	var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#employeeImage')
+                    .attr('src', e.target.result)
+                    .width(100)
+                    .height(100);
+
+                $.ajax({
+                	url:"addImage",
+                	type:"POST",
+                	data:{filename:input.files[0].name,data:e.target.result},
+                	success: function() {
+                		//location.reload();   
+                	}
+                });
+
+                avatarUrl = "/imgs/"+input.files[0].name;
+            };
+            
+            reader.readAsDataURL(input.files[0]);
+		 }
+	}
+
+</script>
+</head>
+
+<body class="edit information">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li class="active"><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<div class="page-body">
+	<div class="panel panel-default edit-info">
+		<div class="panel-heading" th:text="#{employee.info.header}"></div>
+			<div class="panel-body">
+				<form class="edit-info-form" action="#" th:action="@{/editInfoForm}" th:object="${employeeInfoForm}" method="POST">
+
+				    <div class="input-field-group">
+				    	<div class="input-label" th:text="#{employee.info.avatar}"></div>
+						<img id = "employeeImage" class="media-object"  th:src="'/getImage/'+${employeeInfoForm.avatarId}"  src="/imgs/avatar.jpg" alt="avatar" height="100" width="100"> </img>
+						<input class="input-avatar" type="file" accept="image/*" onchange="uploadImg(this);"/>
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.name}"></div>
+						<input class="form-control" readonly="value" type="text" th:field="*{name}" th:value="${employeeInfoForm.name}"/>
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.email}"></div>
+						<input class="form-control" readonly="value" type="text" th:field="*{email}" th:value="${employeeInfoForm.email}"/>
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.tel}"></div>
+						<input class="input-field " type="text" th:field="*{phoneNumber}" th:value="${employeeInfoForm.phoneNumber}" />
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.birthdate}"></div>
+						<input class="input-field " type="text" th:field="*{birthDate}" th:value="${employeeInfoForm.birthDate}" />
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.department}"></div>
+						<input class="input-field " type="text" th:field="*{department}" th:value="${employeeInfoForm.department}" />
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.position}"></div>
+						<input class="input-field " type="text" th:field="*{position}" th:value="${employeeInfoForm.position}" />
+					</div>
+
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.gender}"></div>
+						<input class="input-field " type="text" th:field="*{gender}" th:value="${employeeInfoForm.gender}" />  
+					</div>			
+					
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{employee.info.entrydate}"></div>
+						<input class="input-field " type="text" th:field="*{entryDate}" th:value="${employeeInfoForm.entryDate}" />
+					</div>		
+					
+					<button class="btn btn-primary" type="submit" th:text="#{common.button.save}"> </button>
+				</form>
+			</div>
+	</div>
+</div>
+
+</body>
+</html>

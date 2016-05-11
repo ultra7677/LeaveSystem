@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/calendar.css}"></link>
+</head>
+<body class="page calendar" th:object="${calendarPage}">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li class="active"><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-body">
+		<div class="calendar-container">
+			<div th:each="month: *{months}" class="month col-md-4">
+				<div class="container">
+					<div class="month-header">
+						<div th:text="#{'month.' + ${month.value}}"></div>
+					</div>
+					<div class="month-panel">
+						<div class="week header">
+							<div class="day" th:text="#{week.day.7}" dayofweek="SUNDAY"></div>
+							<div class="day" th:text="#{week.day.1}" dayofweek="MONDAY"></div>
+							<div class="day" th:text="#{week.day.2}" dayofweek="TUESDAY"></div>
+							<div class="day" th:text="#{week.day.3}" dayofweek="WEDNESDAY"></div>
+							<div class="day" th:text="#{week.day.4}" dayofweek="THURSDAY"></div>
+							<div class="day" th:text="#{week.day.5}" dayofweek="FRIDAY"></div>
+							<div class="day" th:text="#{week.day.6}" dayofweek="SATURDAY"></div>
+						</div>
+						<div th:each="week : ${month.weeks}" class="week">
+							<div class="day" th:each="day : ${week.days}" th:attr="dayofweek=${day.date.dayOfWeek}">
+								<div class="day-container" th:if="${day.holiday}" th:attr="holiday=${day.holiday.holidayType}" th:classappend="${day.today}? 'today'">
+									<div class="date-text" th:text="${day.date.dayOfMonth}"></div>
+								</div>
+								<div th:unless="${day.holiday}" class="day-container" th:classappend="${day.today}? 'today'">
+									<div class="date-text" th:text="${day.date.dayOfMonth}"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="holiday-summary">
+			<div>
+				<a class="btn btn-xlarge" href="#" th:href="@{/createHoliday.html}" th:text="#{calendar.button.create}"></a>
+			</div>
+			<div class="legend">
+				<div th:text="#{calendar.legend}"></div>
+				<div class="legend-item nationality">
+					<div class="color"></div>
+					<div class="text" th:text="#{holiday.holidayType.NATIONALITY}"></div>
+				</div>
+				<div class="legend-item company">
+					<div class="color"></div>
+					<div class="text" th:text="#{holiday.holidayType.COMPANY}"></div>
+				</div>
+				<div class="legend-item today">
+					<div class="color"></div>
+					<div class="text" th:text="#{calendar.today}"></div>
+				</div>
+			</div>
+			<div class="holidays-list">
+				<div th:text="#{calendar.allholidays}"></div>
+				<ul>
+					<li th:each="holiday : *{holidays}">
+						<div class="color" th:attr="holiday=${holiday.holidayType}" ></div>
+						<div class="date" th:text="${holiday.date}"></div>
+						<div class="name" th:text="${holiday.name}"></div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+</html>

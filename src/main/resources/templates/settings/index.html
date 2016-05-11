@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/setting.css}"></link>
+<script th:inline="javascript">
+  $(document).on("click", ".modal-dialog .modal-body .row", function(evn) {
+    var userApproverId = $("#chooseApproverDialog").data("userApproverId");
+    var approverId = $(this).data("approverid");
+    $.ajax({
+      type : "POST",
+      url : "/setting/updateApprover",
+      data : JSON.stringify({
+        id : userApproverId,
+        approverId : approverId
+      }),
+      success : function() {
+        $('#chooseApproverDialog').modal('hide')
+        location.reload();
+      },
+      contentType : 'application/json'
+    });
+  });
+
+  $(document).on("show.bs.modal", "#chooseApproverDialog", function(event) {
+    var link = $(event.relatedTarget)
+    var userApproverId = link.data('id')
+    $(this).data("userApproverId", userApproverId);
+  })
+
+$(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
+   var a = $(event.relatedTarget);
+   var id = a.attr('id');
+   var modal = $(this);
+  // alert(id);
+   var name = $('#nameField'+id).text();
+   var baseDays = $('#baseDays'+id).text();
+   var increaseDaysPerYear = $('#increaseDaysPerYear'+id).text();
+   var maxDays = $('#maxDays'+id).text();
+   var leaveTypeId = $('#leaveTypeId' +id).text();
+
+  // alert(leaveTypeId);
+   $('#'+leaveTypeId+'.leavetypes').attr('selected','selected');
+   $('#baseDays.form-control').val(baseDays.split(' ')[0]);
+   $('#increaseDaysPerYear.form-control').val(increaseDaysPerYear.split(' ')[0]);
+   $('#maxDays.form-control').val(maxDays.split(' ')[0]);
+   $('#id.form-control').val(id);
+  // modal.find('input#id.form-control').val(id);
+  // modal.find('input#name.form-control').val(name);
+ });
+
+</script>
+</head>
+<body class="page setting" th:object="${settingPage}">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li class="active"><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-body">
+		<form class="workhours-form" action="#" th:action="@{/setting/workhours}" th:object="${settingPage.workHoursForm}" method="POST">
+			<div class="panel panel-default workhours">
+				<div class="panel-heading">
+					<div class="title" th:text="#{setting.workhours.form.title}"></div>
+					<div class="bar-container">
+						<input class="btn btn-primary" type="submit" th:value="#{common.button.save}" />
+					</div>
+				</div>
+				<div class="panel-body">
+					<ul class="form-error-message" th:if="${#fields.hasGlobalErrors()}">
+						<li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+					</ul>
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{setting.workhours.form.label.morning}"></div>
+						<div class="col-md-6">
+							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.form}"></div>
+							<div class="col-md-10">
+								<select class="input-field" th:field="*{morningStart}">
+									<option th:each="it : *{morningHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.to}"></div>
+							<div class="col-md-10">
+								<select class="input-field" th:field="*{moringEnd}">
+									<option th:each="it : *{morningHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{setting.workhours.form.label.afternoone}"></div>
+						<div class="col-md-6">
+							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.form}"></div>
+							<div class="col-md-10">
+								<select class="input-field" th:field="*{afternoonStart}">
+									<option th:each="it : *{afternoonHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.to}"></div>
+							<div class="col-md-10">
+								<select class="input-field" th:field="*{afternoonEnd}">
+									<option th:each="it : *{afternoonHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<div class="panel panel-default leave-type-rule" th:object="${settingPage.leaveTypeRuleListView}">
+			<div class="panel-heading">
+				<div class="title" th:text="#{setting.leavetyperule.table.title}"></div>
+				<div class="bar-container">
+					<input class="btn btn-primary" type="submit" data-toggle="modal" data-target="#addLeaveTypeRule" th:value="#{common.button.add}" />
+				</div>
+			</div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th th:text="#{setting.leavetyperule.table.column.leavetype}"></th>
+							<th th:text="#{setting.leavetyperule.table.column.basedays}"></th>
+							<th th:text="#{setting.leavetyperule.table.column.increase}"></th>
+							<th th:text="#{setting.leavetyperule.table.column.maxdays}"></th>
+							<th th:text="#{setting.leavetyperule.table.column.operator}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class = "leavetyperule-form" th:each="it,iterableObj : *{rules}">
+							<td th:text="${iterableObj.index + 1}"></td>
+							<td th:id = "nameField+${iterableObj.index + 1}"  th:text="${it.type.name}"></td>
+							<td th:id = "baseDays+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.baseDays})}"></td>
+							<td th:id = "increaseDaysPerYear+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.increaseDaysPerYear})}"></td>
+							<td th:id = "maxDays+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.maxDays})}"></td>
+							<td><a href="#" class="edit" th:id = "${iterableObj.index + 1}" data-toggle="modal" data-target="#editLeaveTypeRule" th:text="#{common.button.setting}"></a></td>
+							<td style="display:none;" th:id = "leaveTypeId + ${iterableObj.index + 1}" th:text="${it.type.id}"> </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="panel panel-default approvel-listview" th:object="${settingPage.approverListView}">
+			<div class="panel-heading" th:text="#{setting.approval.table.title}"></div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th th:text="#{setting.approval.table.column.userName}"></th>
+							<th th:text="#{setting.approval.table.column.approverName}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="it,iterableObj : *{approvers}">
+							<td th:text="${iterableObj.index + 1}"></td>
+							<td th:text="${it.user.fullName}"></td>
+							<td class="approverColumn" th:if="${it.approver != null}">
+								<div class="col-xs-3" th:text="${it.approver.fullName}"></div> <a class="col-xs-3" href="#" data-toggle="modal" data-target="#chooseApproverDialog" th:attr="data-id=${it.id}" th:text="#{setting.approval.table.link.changeApprover}"></a>
+							</td>
+							<td class="approverColumn" th:if="${it.approver == null}">
+								<div>
+									<a href="#" id = "${iterableObj.index + 1}" data-toggle="modal" data-target="#chooseApproverDialog" th:attr="data-id=${it.id}" th:text="#{setting.approval.table.link.bindApprover}"></a>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- Modal Choose Approver Dialog -->
+		<div class="modal fade" id="chooseApproverDialog" tabindex="-1" role="dialog" th:object="${settingPage.approverListView}" aria-labelledby="chooseApproverDialog-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="chooseApproverDialog-title">Selector Approvers</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row" th:each="it:*{users}" th:attr="data-approverId=${it.id}">
+							<div th:text="${it.fullName}"></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.button.cancal}"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+		<!-- Modal Add Leave Type Rule -->
+		<div class="modal fade" id="addLeaveTypeRule" tabindex="-1" role="dialog" aria-labelledby="addLeaveTypeRule-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="addLeaveTypeRule-title">Add Leave Type Rule</h4>
+						<div class="modal-body">
+							<form class="edit-info-form" action="#" th:action="@{/addLeaveTypeRule}" th:object="${settingPage.leaveTypeRuleForm}" method="POST">
+             					<div class="input-field-group">
+                  					<div class="input-label" th:text="#{setting.leavetyperule.table.column.leavetype}"></div>
+                  					<select class="input-field" th:field="*{leaveTypeId}">
+										<option th:each="it : ${settingPage.leaveTypeRuleForm.getLeaveTypes()}" th:text="${it.getName()}" th:value="${it.getId()}"></option>
+									</select>
+              					</div>
+              					<div class="input-field-group">
+              						<div class="input-label" th:text="#{setting.leavetyperule.table.column.basedays}"></div>
+              						 <input class="form-control" type="text" th:field="*{baseDays}"/>
+              					</div>
+              					<div class="input-field-group">
+              						<div class="input-label" th:text="#{setting.leavetyperule.table.column.increase}"></div>
+              						 <input class="form-control" type="text" th:field="*{increaseDaysPerYear}"/>
+              					</div>	
+              					<div class="input-field-group">
+              						<div class="input-label" th:text="#{setting.leavetyperule.table.column.maxdays}"></div>
+              						 <input class="form-control" type="text" th:field="*{maxDays}"/>
+              					</div>
+		
+              					<button type="submit" class="btn btn-primary" th:text="#{common.button.add}"></button>
+          					</form>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Edit Leave Type Rule -->
+		<div class="modal fade" id="editLeaveTypeRule" tabindex="-1" role="dialog" aria-labelledby="addLeaveTypeRule-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="editLeaveTypeRule-title">Edit Leave Type Rule</h4>
+						<div class="modal-body">
+							<form class="edit-info-form" action="#" th:action="@{/editLeaveTypeRule}" th:object="${settingPage.leaveTypeRuleForm}" method="POST">
+             					<div class="input-field-group">
+                  					<div class="input-label" th:text="#{setting.leavetyperule.table.column.leavetype}"></div>
+                  					<select class="input-field" th:field="*{leaveTypeId}" >
+										<option class="leavetypes" th:id="${it.getId()}" th:each="it : ${settingPage.leaveTypeRuleForm.getLeaveTypes()}" th:text="${it.getName()}" th:value="${it.getId()}"></option>
+									</select>
+              					</div>
+								<div class="input-field-group" th:classappend="${#fields.hasErrors('baseDays')}? 'error' : ''">
+              						<div class="input-label" th:text="#{setting.leavetyperule.table.column.basedays}"></div>
+              						 <input class="form-control" th:id="baseDays" type="text" th:field="*{baseDays}" />
+              						 <div class="input-field-error-message" th:if="${#fields.hasErrors('baseDays')}" th:errors="*{baseDays}"></div>
+              					</div>
+              					<div class="input-field-group">
+              						<div class="input-label" th:text="#{setting.leavetyperule.table.column.increase}"></div>
+              						 <input class="form-control" th:id="increaseDaysPerYear" type="text" th:field="*{increaseDaysPerYear}"/>
+              					</div>	
+              					<div class="input-field-group">
+              						<div class="input-label" th:text="#{setting.leavetyperule.table.column.maxdays}"></div>
+              						 <input class="form-control" th:id="maxDays" type="text" th:field="*{maxDays}"/>
+              					</div>
+              					<div class="input-field-group">
+                 			 		<input class="form-control" type="hidden"  th:name="leaveTypeRuleForm.id" th:id="id"/>
+              					</div>
+              					<button type="submit" class="btn btn-primary" th:text="#{common.button.save}"></button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</body>
+</html>

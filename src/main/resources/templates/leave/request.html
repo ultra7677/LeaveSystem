@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/leaverequest.css}"></link>
+</head>
+<body class="leave-reuqest">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li class="active"><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<div class="page-body">
+	<div class="panel panel-default approvel-listview">
+		<div class="panel-heading" th:text="#{leave.request.form.title}"></div>
+		<div class="panel-body">
+			<form class="leave-request-form" action="#" th:action="@{/leave/request}" th:object="${leaveRequestForm}" method="POST">
+				<ul class="form-error-message" th:if="${#fields.hasGlobalErrors()}">
+					<li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+				</ul>
+				<div class="input-field-group">
+					<div class="input-label" th:text="#{leave.request.form.employeeName}"></div>
+					<input class="input-field " type="text" th:value="${currentUserInfo.fullName}" readonly="readonly" />
+				</div>
+				<div class="input-field-group">
+					<div class="input-label" th:text="#{leave.request.form.leaveType}"></div>
+					<select class="input-field " th:field="*{leaveType}">
+						<option th:each="it : ${@leaveTypeService.findAll()}" th:value="${it.id}" th:text="${it.name}"></option>
+					</select>
+				</div>
+				<div class="input-field-group" >
+					<div class="input-label" th:text="#{leave.request.form.startDate}"></div>
+					<div class="col-md-6">
+						<input class="input-field " type="date" th:field="*{startDate}" />
+					</div>
+					<div class="col-md-6">
+						<select class="input-field " th:field="*{startTime}">
+							<option th:each="it : ${@workHoursService.getWorkHours()}" th:value="${it}" th:text="#{'time.'+ ${it} +'.text'}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="input-field-group" >
+					<div class="input-label" th:text="#{leave.request.form.endDate}"></div>
+					<div class="col-md-6" th:classappend="${#fields.hasErrors('endDate')}? 'error' : ''">
+						<input class="input-field " type="date" th:field="*{endDate}" />
+						<div class="input-field-error-message" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">
+							
+						</div>
+					</div>
+					<div class="col-md-6" th:classappend="${#fields.hasErrors('endTime')}? 'error' : ''">
+						<select class="input-field " th:field="*{endTime}">
+							<option th:each="it : ${@workHoursService.getWorkHours()}" th:value="${it}" th:text="#{'time.'+ ${it} +'.text'}"></option>
+						</select>
+						<div class="input-field-error-message" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></div>
+					</div>
+				</div>
+				<div class="input-field-group">
+					<div class="input-label" th:text="#{leave.request.form.approver}"></div>
+					<input class="input-field " type="text" readonly="readonly" th:field="*{approverName}" />
+				</div>
+				<div class="input-field-group">
+					<div class="input-label" th:text="#{leave.request.form.description}"></div>
+					<input class="input-field " type="text" th:field="*{description}" />
+				</div>
+				<button class="btn btn-primary" type="submit" th:text="#{leave.request.form.button.submit}"> </button>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+</html>

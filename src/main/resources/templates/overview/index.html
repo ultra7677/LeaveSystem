@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/overview.css}"></link>
+<script type="text/javascript">
+  $(document).on("click", ".cancalLeaveLink", function() {
+    var leaveId = $(this).data("id");
+    $.ajax({
+      type : "POST",
+      url : "/leave(" + leaveId + ")/cancel",
+      success : function() {
+        location.reload();
+      },
+      contentType : 'application/json'
+    });
+  });
+
+  $(document).on("click", ".approveLeaveLink", function() {
+    var leaveId = $(this).data("id");
+    $.ajax({
+      type : "POST",
+      url : "/leave(" + leaveId + ")/approve",
+      success : function() {
+        location.reload();
+      },
+      contentType : 'application/json'
+    });
+  });
+
+  $(document).on("click", ".rejectLeaveLink", function() {
+    var leaveId = $(this).data("id");
+    $.ajax({
+      type : "POST",
+      url : "/leave(" + leaveId + ")/reject",
+      success : function() {
+        location.reload();
+      },
+      contentType : 'application/json'
+    });
+  });
+
+</script>
+</head>
+<body class="page overview" th:object="${overviewPage}">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-body">
+		<div class="panel panel-default my-leaves-overview">
+			<div class="panel-heading">
+				<span th:text="#{overview.myleaves.table.title}"></span> <span class="hoursOfDay" th:text="#{overview.myLeaves.table.hoursOfDay(*{workHours.workHours})}"></span>
+			</div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th th:text="#{overview.myleaves.table.column.leaveType}"></th>
+							<th th:text="#{overview.myleaves.table.column.from}"></th>
+							<th th:text="#{overview.myleaves.table.column.to}"></th>
+							<th th:text="#{overview.myleaves.table.column.total}"></th>
+							<th th:text="#{overview.myleaves.table.column.used}"></th>
+							<th th:text="#{overview.myleaves.table.column.available}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="it,iterableObj : *{leaveInfos}">
+							<td th:text="${iterableObj.index + 1}"></td>
+							<td th:text="${it.leaveType.name}"></td>
+							<td th:text="${it.fromDate}"></td>
+							<td th:text="${it.toDate}"></td>
+							<td th:text="${@formatterService.formatTotalHours(it.totalHours)}"></td>
+							<td th:text="${@formatterService.formatTotalHours(it.usedHours)}"></td>
+							<td th:text="${@formatterService.formatTotalHours(it.availableHours)}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div class="panel panel-default approvel-listview" th:if="${overviewPage.isShowWaitApproveList()}">
+			<div class="panel-heading" th:text="#{overview.waitForApprove.table.title}"></div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th th:text="#{overview.leave.table.column.userName}"></th>
+							<th th:text="#{overview.leave.table.column.leaveType}"></th>
+							<th th:text="#{overview.leave.table.column.startDate}"></th>
+							<th th:text="#{overview.leave.table.column.endDate}"></th>
+							<th th:text="#{overview.leave.table.column.total}"></th>
+							<th th:text="#{overview.leave.table.column.description}"></th>
+							<th th:text="#{overview.leave.table.column.operator}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="it,iterableObj : *{approveLeaveTable.leaves}">
+							<td th:text="${iterableObj.index + 1}"></td>
+							<td th:text="${it.user.fullName}"></td>
+							<td th:text="${it.type.name}"></td>
+							<td th:text="${@formatterService.formatDate(it.startDateTime)}"></td>
+							<td th:text="${@formatterService.formatDate(it.endDateTime)}"></td>
+							<td th:text="${@formatterService.formatTotalHours(it.total)}"></td>
+							<td th:text="${it.description}"></td>
+							<td><a class="approveLeaveLink" href="#" th:attr="data-id=${it.id}" th:text="#{common.button.approve}"></a> <a class="rejectLeaveLink" href="#" th:attr="data-id=${it.id}" th:text="#{common.button.reject}"></a></td>
+						</tr>
+					</tbody>
+				</table>
+				<nav th:if="*{approveLeaveTable.show}">
+					<ul class="pagination pull-right">
+						<li th:if="*{approveLeaveTable.showPreviousButton}"><a th:href="@{''(myLeavePage=*{myLeaveTable.currentIndex}, approveLeavePage= *{approveLeaveTable.previousPageIndex})}" aria-label="Previous"> <span aria-hidden="true">&laquo;</span></a></li>
+						<li th:each="index : *{approveLeaveTable.pageNumbers}" th:classappend="*{approveLeaveTable.currentIndex} == ${index} ? 'active'"><a th:href="@{''(myLeavePage=*{myLeaveTable.currentIndex}, approveLeavePage= ${index})}" th:text="${index}"></a></li>
+						<li th:if="*{approveLeaveTable.showNextButton}"><a th:href="@{''(myLeavePage=*{myLeaveTable.currentIndex}, approveLeavePage= *{approveLeaveTable.nextPageIndex})}" aria-label="Next"> <span aria-hidden="true">&raquo;</span></a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+
+		<div class="panel panel-default my-leave-listview" th:if="${overviewPage.isShowMyLeaves()}">
+			<div class="panel-heading" th:text="#{overview.myLeaves.table.title}"></div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th th:text="#{overview.leave.table.column.userName}"></th>
+							<th th:text="#{overview.leave.table.column.leaveType}"></th>
+							<th th:text="#{overview.leave.table.column.startDate}"></th>
+							<th th:text="#{overview.leave.table.column.endDate}"></th>
+							<th th:text="#{overview.leave.table.column.total}"></th>
+							<th th:text="#{overview.leave.table.column.status}"></th>
+							<th th:text="#{overview.leave.table.column.description}"></th>
+							<th th:text="#{overview.leave.table.column.operator}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="it,iterableObj : *{myLeaveTable.leaves}">
+							<td th:text="${iterableObj.index + 1}"></td>
+							<td th:text="${it.user.fullName}"></td>
+							<td th:text="${it.type.name}"></td>
+							<td th:text="${@formatterService.formatDate(it.startDateTime)}"></td>
+							<td th:text="${@formatterService.formatDate(it.endDateTime)}"></td>
+							<td th:text="${@formatterService.formatTotalHours(it.total)}"></td>
+							<td th:text="#{'enums.leavestatus.' + ${it.status.name()}}"></td>
+							<td th:text="${it.description}"></td>
+							<td><a class="cancalLeaveLink" th:attr="data-id=${it.id}" href="#" th:if="${it.status.name() == 'NEW'}">Cancel</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<nav th:if="*{myLeaveTable.show}">
+					<ul class="pagination pull-right">
+						<li th:if="*{myLeaveTable.showPreviousButton}"><a th:href="@{''(myLeavePage=*{myLeaveTable.previousPageIndex}, approveLeavePage= *{approveLeaveTable.currentIndex})}" aria-label="Previous"> <span aria-hidden="true">&laquo;</span></a></li>
+						<li th:each="index : *{myLeaveTable.pageNumbers}" th:classappend="*{myLeaveTable.currentIndex} == ${index} ? 'active'"><a th:href="@{''(myLeavePage=${index}, approveLeavePage= *{approveLeaveTable.currentIndex})}" th:attr="data-id=${index}" th:text="${index}"  ></a></li>
+						<li th:if="*{myLeaveTable.showNextButton}"><a th:href="@{''(myLeavePage=*{myLeaveTable.nextPageIndex}, approveLeavePage= *{approveLeaveTable.currentIndex})}" aria-label="Next"> <span aria-hidden="true">&raquo;</span></a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

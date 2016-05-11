@@ -1,0 +1,43 @@
+.page.setting .modal-dialog {
+  width: 500px;
+  margin:100px auto;
+}
+
+.page.setting .modal-dialog .modal-content {
+  min-height: 600px;
+}
+
+.page.setting .modal-dialog .modal-content .modal-footer {
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.page.setting .modal-dialog .modal-content .modal-body {
+  padding-top: 0px;
+}
+
+.page.setting .modal-dialog .modal-content .modal-body .row {
+  height: 40px;
+  line-height: 40px; border-bottom : 1px solid #e5e5e5;
+  padding: 0 15px;
+  border-bottom: 1px solid #e5e5e5;
+  cursor: pointer;
+}
+
+.page.setting .modal-dialog .modal-content .modal-body .row:hover{
+  background: #e5e5e5;
+}
+
+.page.setting tbody{
+  border-bottom: 1px solid #ddd;
+}
+
+.page.setting td .col-xs-3{
+  padding:0px;
+}
+
+.page.setting .workhours-form .sub-label{
+  line-height:40px;
+}

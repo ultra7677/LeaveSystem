@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Human Resource</title>
+<script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/libs/bootstrap-3.3.5/js/bootstrap.min.js}"></script>
+<link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
+<link rel="stylesheet" th:href="@{/css/common.css}"></link>
+<link rel="stylesheet" th:href="@{/css/calendar.css}"></link>
+</head>
+<body class="page calendar">
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Leave System</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
+					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
+					<li class="active"><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
+					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+				</ul>
+				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
+					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
+					<li><a th:href="@{/logout}" th:text="#{page.header.logout}"></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="page-body">
+		<div class="panel panel-default approvel-listview">
+			<div class="panel-heading" th:text="#{holiday.create.form.title}"></div>
+			<div class="panel-body">
+				<form class="leave-request-form" action="#" th:action="@{/createHoliday}" th:object="${holidayForm}" method="POST">
+					<ul class="form-error-message" th:if="${#fields.hasGlobalErrors()}">
+						<li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+					</ul>
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{holiday.create.form.date}"></div>
+						<input class="input-field " type="date" th:field="*{date}" />
+
+					</div>
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{holiday.create.form.name}"></div>
+						<input class="input-field " type="text" th:field="*{name}" />
+					</div>
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{holiday.create.form.foreignName}"></div>
+						<input class="input-field " type="text" th:field="*{foreignName}" />
+					</div>
+					<div class="input-field-group">
+						<div class="input-label" th:text="#{holiday.create.form.holidayType}"></div>
+						<select class="input-field " th:field="*{holidayType}">
+							<option value="NATIONALITY" th:text="#{holiday.create.form.holidayType.NATIONALITY}"></option>
+							<option value="COMPANY" th:text="#{holiday.create.form.holidayType.COMPANY}"></option>
+						</select>
+					</div>
+					<input class="btn btn-xlarge login" type="submit" th:value="#{common.button.save}" />
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

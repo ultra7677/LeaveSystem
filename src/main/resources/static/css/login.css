@@ -1,0 +1,31 @@
+body {
+  background-image: url("/imgs/bg.jpg");
+}
+
+.input-field-group.password {
+  margin-top: 10px;
+}
+
+.btn.oauth-login, .btn.login, .useful-links {
+  margin-top: 20px;
+}
+
+.oauth-login-form {
+  padding: 20px 0px;
+}
+
+.split-line {
+  height: 1px;
+  border-bottom: 1px solid white;
+}
+
+.forget-password {
+  width: 50%;
+  float: left;
+}
+
+.register {
+  width: 50%;
+  float: right;
+  text-align: right;
+}

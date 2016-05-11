@@ -1,0 +1,132 @@
+ul, menu, dir {
+  -webkit-padding-start: 0px;
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  list-style-type: none;
+}
+
+.panel.panel-default{
+	margin-left : 15px;
+	margin-top : 15px;
+	max-width : 970px;
+}
+
+.page-body {
+  padding: 30px 50px;
+}
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.input-field {
+  height: 38px;
+  line-height: 38px;
+  width: 100%;
+  border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #999;
+  padding: 0 10px;
+}
+
+.input-field:not(select):not ([readonly] ):focus {
+  outline: none;
+  box-shadow: none;
+  border: 1px solid #FFC107;
+  background-color: rgb(250, 255, 189);
+}
+
+.input-field[readonly] {
+  outline: none;
+  box-shadow: none;
+  background-color: rgb(228, 228, 228);
+}
+
+.input-label {
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  color: #2B1E1E;
+  font-size: 14px;
+}
+
+.input-field-group {
+  margin: 10px 0px;
+  clear: both;
+}
+
+.input-field-group.error .input-field {
+  border-color: red;
+}
+
+.input-field-group .input-field-error-message {
+  color: red;
+  font-size: 12px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.input-field-group.error .input-field-error-message {
+  display: block;
+}
+
+.btn-xlarge {
+  height: 45px;
+  width: 100%;
+  background-color: #4A90E2;
+  border-radius: 5px;
+  color: #fff;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-xlarge:hover {
+  color: #fff;
+}
+
+.useful-links a {
+  color: #504949;
+  font-size: 12px;
+}
+
+form .form-error-message {
+  color: red;
+}
+
+.panel.action-panel {
+  width: 450px;
+  position: absolute;
+  right: 200px;
+  top: 250px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(204, 204, 204, 0.5);
+}
+
+.panel.action-panel .panel-heading {
+  background: rgba(245, 245, 245, 0.5);
+  border-bottom: 1px solid white;
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+.panel .panel-heading {
+  position: relative;
+}
+
+.panel .panel-heading .bar-container {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  bottom: 0;
+  padding: 3px 0px;
+}
+
+.btn-primary {
+  background-color: #4A90E2;
+  border-color: #4A90E2;
+}
