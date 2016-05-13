@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-
 <head>
 <title>Human Resource</title>
 <script type="text/javascript" th:src="@{/libs/jquery-2.1.4/jquery-2.1.4.min.js}"></script>
@@ -8,8 +7,30 @@
 <link rel="stylesheet" th:href="@{/libs/bootstrap-3.3.5/css/bootstrap.min.css}"></link>
 <link rel="stylesheet" th:href="@{/css/common.css}"></link>
 <link rel="stylesheet" th:href="@{/css/employee.css}"></link>
-<script type="text/javascript">
+<script th:inline="javascript">
+$(document).on("click", ".modal-dialog .modal-body .row", function(evn) {
+    var userApproverId = $("#chooseApproverDialog").data("userApproverId");
+    var approverId = $(this).data("approverid");
+    $.ajax({
+      type : "POST",
+      url : "/setting/updateApprover",
+      data : JSON.stringify({
+        id : userApproverId,
+        approverId : approverId
+      }),
+      success : function() {
+        $('#chooseApproverDialog').modal('hide')
+        location.reload();
+      },
+      contentType : 'application/json'
+    });
+  });
 
+  $(document).on("show.bs.modal", "#chooseApproverDialog", function(event) {
+    var link = $(event.relatedTarget)
+    var userApproverId = link.data('id')
+    $(this).data("userApproverId", userApproverId);
+  })
 </script>
 </head>
 
@@ -93,14 +114,72 @@
 							<span th:if="${employeeInfoForm.entryDate != null}" th:text="${employeeInfoForm.entryDate}"></span>
   					    </th>
   					</tr>
+  					<tr>
+  						<th>
+  							<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+  							<span th:text= "#{employee.info.company}"></span>
+							<span th:text= "${companyInfo.name}"></span>
+  						</th>
+  						<th>
+  						</th>
+  					</tr>
 					</thead>
 				</table>
   			</div>
   			<div class= "media-right">
-  				<a  href="#" th:href="@{/edit.html}" role="button" class="btn btn-default btn-xs"> Edit</a>
+  				<a href="#" th:href="@{/edit.html}" role="button" class="btn btn-default btn-xs"> Edit</a>
   			</div>
   		</div>
 	</div>
+	
+	<div class="panel panel-default approvel-listview" th:object="${approverListView}">
+		<div class="panel-heading" th:text="#{employee.approval.table.title}"></div>
+		<div class="panel-body">
+			<table class="table">
+				<thead>
+					<tr>
+						<th th:text="#{setting.approval.table.column.userName}"></th>
+						<th th:text="#{setting.approval.table.column.approverName}"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="it,iterableObj : *{approvers}" th:if = "(${it.user.id} == ${currentUserInfo.user.id})">
+						<td th:text="${it.user.fullName}"></td>
+						<td class="approverColumn" th:if="${it.approver != null}">
+							<div class="col-xs-3" th:text="${it.approver.fullName}"></div> <a class="col-xs-3" href="#" data-toggle="modal" data-target="#chooseApproverDialog" th:attr="data-id=${it.id}" th:text="#{setting.approval.table.link.changeApprover}"></a>
+						</td>
+						<td class="approverColumn" th:if="${it.approver == null}">
+							<div>
+								<a href="#" id = "${iterableObj.index + 1}" data-toggle="modal" data-target="#chooseApproverDialog" th:attr="data-id=${it.id}" th:text="#{setting.approval.table.link.bindApprover}"></a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+			<!-- Modal Choose Approver Dialog -->
+		<div class="modal fade" id="chooseApproverDialog" tabindex="-1" role="dialog" th:object="${approverListView}" aria-labelledby="chooseApproverDialog-title">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<h4 class="modal-title" id="chooseApproverDialog-title">Selector Approvers</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row" th:each="it:*{users}" th:attr="data-approverId=${it.id}">
+							<div th:text="${it.fullName}"></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.button.cancal}"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 </div>
 </body>
 </html>

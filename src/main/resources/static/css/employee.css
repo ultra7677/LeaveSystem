@@ -1,0 +1,39 @@
+.employee.information .modal-dialog {
+  width: 500px;
+  margin:100px auto;
+}
+
+.employee.information .modal-dialog .modal-content {
+  min-height: 600px;
+}
+
+.employee.information .modal-dialog .modal-content .modal-footer {
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.employee.information .modal-dialog .modal-content .modal-body {
+  padding-top: 0px;
+}
+
+.employee.information .modal-dialog .modal-content .modal-body .row {
+  height: 40px;
+  line-height: 40px; border-bottom : 1px solid #e5e5e5;
+  padding: 0 15px;
+  border-bottom: 1px solid #e5e5e5;
+  cursor: pointer;
+}
+
+.employee.information .modal-dialog .modal-content .modal-body .row:hover{
+  background: #e5e5e5;
+}
+
+.employee.information tbody{
+  border-bottom: 1px solid #ddd;
+}
+
+.employee.information td .col-xs-3{
+  padding:0px;
+}

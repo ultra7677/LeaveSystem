@@ -15,6 +15,7 @@ public class ApproverListView {
 		this.setApprovers(approvers);
 		this.users = users;
 	}
+	
 
 	private Iterable<Approver> approvers = new ArrayList<Approver>();
 	private Iterable<User> users = new ArrayList<User>();
@@ -34,4 +35,5 @@ public class ApproverListView {
 	public void setApprovers(Iterable<Approver> approvers) {
 		this.approvers = approvers;
 	}
+
 }

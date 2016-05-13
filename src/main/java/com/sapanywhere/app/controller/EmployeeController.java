@@ -27,10 +27,13 @@ import com.sapanywhere.app.entity.Company;
 import com.sapanywhere.app.entity.Employee;
 import com.sapanywhere.app.entity.Files;
 import com.sapanywhere.app.model.EmployeeInfoForm;
+import com.sapanywhere.app.model.setting.ApproverListView;
 import com.sapanywhere.app.repository.EmployeeRepository;
+import com.sapanywhere.app.service.ApproverService;
 import com.sapanywhere.app.service.CompanyService;
 import com.sapanywhere.app.service.EmployeeService;
 import com.sapanywhere.app.service.FileService;
+import com.sapanywhere.app.service.UserService;
 import com.sapanywhere.app.service.user.UserInfo;
 
 @Controller
@@ -51,15 +54,24 @@ public class EmployeeController {
 	
 	@Autowired
 	private FileService fileService;
+	
+	@Autowired
+	private ApproverService approverService;
 
+	@Autowired
+	private UserService userService;
+	
 	@ModelAttribute("companyInfo")
 	public Company getCompanyInfo(){
 		return this.companyService.findById((long) 1);
 	}
 	
 	@RequestMapping(value = "/information.html",method = RequestMethod.GET)
-	public String createPage(@AuthenticationPrincipal UserInfo userInfo, EmployeeInfoForm employeeInfoForm){
+	public String createPage(@AuthenticationPrincipal UserInfo userInfo, EmployeeInfoForm employeeInfoForm,ApproverListView approverListView){
+		approverListView.setApprovers(this.approverService.findAllApproves());
+		approverListView.setUsers(this.userService.findAll());
 		System.out.println(userInfo.getUser().getId());
+		System.out.println(approverListView.getApprovers().iterator().next().getUser().getEmail());
 	    Employee employee = employeeRepository.findByUser(userInfo.getUser());
 	    System.out.println(employee.getFirstName());
 	    employeeInfoForm.setByEmployee(employee);    
