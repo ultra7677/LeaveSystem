@@ -1,5 +1,7 @@
 package com.sapanywhere.app.model.setting;
 
+import com.sapanywhere.app.model.CompanyInfoForm;
+import com.sapanywhere.app.model.DepartmentInfoForm;
 import com.sapanywhere.app.model.LeaveTypeRuleForm;
 
 public class SettingPage {
@@ -11,17 +13,23 @@ public class SettingPage {
 	public SettingPage(WorkHoursForm workHoursForm,
 			ApproverListView approverListView,
 			LeaveTypeRuleListView leaveTypeRuleListView,
-			LeaveTypeRuleForm leaveTypeRuleForm) {
+			LeaveTypeRuleForm leaveTypeRuleForm,
+			CompanyInfoForm companyInfoForm,
+			DepartmentInfoForm departmentInfoForm) {
 		this.workHoursForm = workHoursForm;
 		this.approverListView = approverListView;
 		this.leaveTypeRuleListView = leaveTypeRuleListView;
 		this.leaveTypeRuleForm = leaveTypeRuleForm;
+		this.companyInfoForm = companyInfoForm;
+		this.departmentInfoForm = departmentInfoForm;
 	}
 
 	private WorkHoursForm workHoursForm;
 	private ApproverListView approverListView;
 	private LeaveTypeRuleListView leaveTypeRuleListView;
 	private LeaveTypeRuleForm leaveTypeRuleForm;
+	private CompanyInfoForm companyInfoForm;
+	private DepartmentInfoForm departmentInfoForm;
 	
 	public ApproverListView getApproverListView() {
 		return approverListView;
@@ -54,6 +62,22 @@ public class SettingPage {
 
 	public void setLeaveTypeRuleForm(LeaveTypeRuleForm leaveTypeRuleForm) {
 		this.leaveTypeRuleForm = leaveTypeRuleForm;
+	}
+
+	public DepartmentInfoForm getDepartmentInfoForm() {
+		return departmentInfoForm;
+	}
+
+	public void setDepartmentInfoForm(DepartmentInfoForm departmentInfoForm) {
+		this.departmentInfoForm = departmentInfoForm;
+	}
+
+	public CompanyInfoForm getCompanyInfoForm() {
+		return companyInfoForm;
+	}
+
+	public void setCompanyInfoForm(CompanyInfoForm companyInfoForm) {
+		this.companyInfoForm = companyInfoForm;
 	}
 
 }

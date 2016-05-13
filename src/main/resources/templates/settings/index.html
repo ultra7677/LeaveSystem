@@ -8,6 +8,7 @@
 <link rel="stylesheet" th:href="@{/css/common.css}"></link>
 <link rel="stylesheet" th:href="@{/css/setting.css}"></link>
 <script th:inline="javascript">
+
   $(document).on("click", ".modal-dialog .modal-body .row", function(evn) {
     var userApproverId = $("#chooseApproverDialog").data("userApproverId");
     var approverId = $(this).data("approverid");
@@ -43,23 +44,92 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
    var maxDays = $('#maxDays'+id).text();
    var leaveTypeId = $('#leaveTypeId' +id).text();
 
-  // alert(leaveTypeId);
    $('#'+leaveTypeId+'.leavetypes').attr('selected','selected');
    $('#baseDays.form-control').val(baseDays.split(' ')[0]);
    $('#increaseDaysPerYear.form-control').val(increaseDaysPerYear.split(' ')[0]);
    $('#maxDays.form-control').val(maxDays.split(' ')[0]);
    $('#id.form-control').val(id);
-  // modal.find('input#id.form-control').val(id);
-  // modal.find('input#name.form-control').val(name);
  });
+
+var avatarUrl = "";
+function uploadImg(input) {
+		if (input.files[0]) {
+		    var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#companyImage')
+                    .attr('src', e.target.result)
+                    .width(100)
+                    .height(100);
+                $.ajax({
+                    url : "addLogo",
+                    type: "POST",
+                    data: {filename:input.files[0].name,data:e.target.result},
+                    success: function() {
+                		    //location.reload();   
+                }
+            });
+        avatarUrl = "/imgs/"+input.files[0].name;
+    };
+    reader.readAsDataURL(input.files[0]);
+	}
+}
+
+
+
+var isButtonExist = false;
+var lastButtonIndex;
+
+$(document).on('mouseenter', '.departmentInfo', function (e) {
+    //alert('over'+this.id);
+
+    if(isButtonExist) 
+       $('#editButton'+lastButtonIndex).remove();
+
+    var offset = 13 + (this.id - 1)*31;
+
+    var r = $('<button th:if="${currentUserInfo.user.role.name()} == 'ADMIN'"/>',
+    {
+        type:'button',
+        class:'btn btn-primary btn-xs',
+        id:'editButton'+this.id,
+        'data-toggle':'modal',
+        'data-target':'#editDepartment',
+        'data-whatver':this.id,
+        'style':'margin-top:'+offset+'px',
+        text:'Edit'
+    })
+
+    $('#media-department-right')
+        .append(r);
+
+    isButtonExist = true;
+    lastButtonIndex = this.id;
+});
+
+
+$(document).on('mouseleave', '.panel-body', function (e) {
+  $('#editButton'+lastButtonIndex).remove();
+  isButtonExist = false;
+});
+
+$(document).on('show.bs.modal','#editDepartment',function (event){
+   var button = $(event.relatedTarget);
+   var id = button.data('whatver');
+   var modal = $(this);
+   var name = $('#departmentNameField'+id).text();
+   modal.find('input#departmentInfoForm\\.id.form-control').val(id);
+   modal.find('input#departmentInfoForm\\.name.form-control').val(name);
+ });
+
 
 </script>
 </head>
 <body class="page setting" th:object="${settingPage}">
+
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#" th:href="@{/companyinfo.html}" th:text="${companyInfo.name}"></a>
+				<a class="navbar-brand" href="#">Leave System</a>
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -77,13 +147,142 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 		</div>
 	</nav>
 
+	<!-- Modal Edit Company -->
+<div class="modal fade" id="editCompany" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" th:text="#{company.info.header}"></h4>
+      </div>
+      <div class="modal-body">
+      		<form class="edit-info-form" action="#" th:action="@{/editCompanyInfoForm}" th:object="${settingPage.companyInfoForm}" method="POST">
+	  		  	<div class="input-field-group">
+					<div class="input-label" th:text="#{company.info.logo}"></div>
+					<img id = "companyImage" class="media-object"  th:src="'/getLogo/'+*{avatarId}"  src="/imgs/avatar.jpg" alt="avatar" height="100" width="100"> </img>
+					<input class="input-avatar" type="file" accept="image/*" onchange="uploadImg(this);"/>
+				</div>
+				<div class="input-field-group">
+					<div class="input-label" th:text="#{company.info.name}"></div>
+					<input class="form-control" type="text" th:field="*{name}" th:value="${name}"/>
+				</div>
+  				<button type="submit" class="btn btn-primary" th:text="#{common.button.save}"></button>
+      		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Add Department -->
+<div class="modal fade" id="addDepartment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" th:text="#{company.info.department}"></h4>
+      </div>
+      <div class="modal-body">
+          <form class="edit-info-form" action="#" th:action="@{/addDepartment}" th:object="${settingPage.departmentInfoForm}" method="POST">
+              <div class="input-field-group">
+                  <div class="input-label" th:text="#{company.info.departmentname0}"></div>
+                  <input class="form-control" type="text" th:field="*{name}"/>
+              </div>
+              <button type="submit" class="btn btn-primary" th:text="#{common.button.add}"></button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Department -->
+<div class="modal fade" id="editDepartment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" th:text="#{company.info.editdepartment}"></h4>
+      </div>
+      <div class="modal-body">
+          <form class="edit-info-form" action="#" th:action="@{/editDepartment}" th:object="${settingPage.departmentInfoForm}" method="POST">
+              <div class="input-field-group">
+                  <div class="input-label" th:text="#{company.info.departmentname0}"></div>
+                  <input class="form-control" type="text"  th:name="departmentInfoForm.name" th:id="departmentInfoForm.name"/>
+              </div>
+              <div class="input-field-group">
+                  <input class="form-control" type="hidden"  th:name="departmentInfoForm.id" th:id="departmentInfoForm.id"/>
+              </div>
+              <button type="submit" class="btn btn-primary" th:text="#{common.button.save}"></button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 	<div class="page-body">
+
+	<div class="panel panel-default" th:object ="${settingPage.companyInfoForm}">
+		<div class="panel-heading" th:text="#{company.info.header}"></div>
+		<div class="panel-body">
+  			<div class="media">
+ 				<div class="media-body">
+ 					<table class="table">
+ 					<thead>
+ 						<tr>
+ 							<th>
+    						<span th:text="#{company.info.name}"></span>
+    						<span th:text="*{name}"></span>
+    					</th>
+ 						</tr>
+ 						<tr>
+ 							<th>
+  				  			<span th:text="#{company.info.logo}"></span>
+  				  			<img class="media-object" th:src="'/getLogo/'+*{avatarId}"  src="/imgs/avatar.jpg" alt="avatar" height="100" width="100"> </img>
+  						</th>
+  					</tr>
+  				</thead>
+ 					</table>
+ 				</div>
+  				<div class= "media-right">
+  					<button th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editCompany"> Edit</button>
+  				</div>
+			</div>    
+		</div>
+	</div>
+
+	<div class="panel panel-default" th:object = "${settingPage.departmentInfoForm}">
+      <div class="panel-heading" th:text="#{company.info.department}"> </div>
+      <div class="panel-body">
+        <div class="media">
+          <div class="media-body">
+           <table class="table table-condensed">
+             <thead>
+                <tr>
+                  <th th:text="#{company.info.departmentname1}"></th>
+               </tr>
+              </thead>
+              <tbody id="table-body" >
+                <tr class="departmentInfo" th:each = "it : *{departments}" th:id="${it.getId()}">
+                  <td>
+                   <span th:id = "departmentNameField+${it.getId()}" th:text="${it.getName()}"> </span>
+                 </td>
+                </tr>   
+              </tbody>
+            </table>
+          </div>
+          <div class= "media-right" id="media-department-right">
+            <button th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" id="editButton0" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addDepartment">Add</button>
+          </div>
+        </div>
+      </div>
+  </div>
+
+
 		<form class="workhours-form" action="#" th:action="@{/setting/workhours}" th:object="${settingPage.workHoursForm}" method="POST">
 			<div class="panel panel-default workhours">
 				<div class="panel-heading">
 					<div class="title" th:text="#{setting.workhours.form.title}"></div>
 					<div class="bar-container">
-						<input th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary" type="submit" th:value="#{common.button.save}" />
+						<input th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary btn-xs" type="submit" th:value="#{common.button.save}" />
 					</div>
 				</div>
 				<div class="panel-body">
@@ -136,7 +335,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 			<div class="panel-heading">
 				<div class="title" th:text="#{setting.leavetyperule.table.title}"></div>
 				<div class="bar-container">
-					<input th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary" type="submit" data-toggle="modal" data-target="#addLeaveTypeRule" th:value="#{common.button.add}" />
+					<input th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary btn-xs" type="submit" data-toggle="modal" data-target="#addLeaveTypeRule" th:value="#{common.button.add}" />
 				</div>
 			</div>
 			<div class="panel-body">

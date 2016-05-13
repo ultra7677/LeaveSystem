@@ -30,6 +30,7 @@ import com.sapanywhere.app.entity.Department;
 import com.sapanywhere.app.entity.Files;
 import com.sapanywhere.app.model.CompanyInfoForm;
 import com.sapanywhere.app.model.DepartmentInfoForm;
+import com.sapanywhere.app.model.setting.SettingPage;
 import com.sapanywhere.app.service.CompanyService;
 import com.sapanywhere.app.service.DepartmentService;
 import com.sapanywhere.app.service.FileService;
@@ -118,33 +119,35 @@ public class CompanyController {
 	}
 	
 	@RequestMapping(value = "/editCompanyInfoForm", method = RequestMethod.POST)
-	public String editCompanyInfo(@AuthenticationPrincipal UserInfo userInfo,CompanyInfoForm companyInfoForm, BindingResult result) {
+	public String editCompanyInfo(@AuthenticationPrincipal UserInfo userInfo,SettingPage settingPage, BindingResult result) {
 		if (result.hasErrors()) {
 			return "/company/companyinfo";
 		}
+		CompanyInfoForm companyInfoForm = settingPage.getCompanyInfoForm();
 		Company company = this.companyService.findById((long) 1);
 	//	company.setLogoId(companyInfoForm.getAvatarId());
 		company.setName(companyInfoForm.getName());
 		this.companyService.save(company);
-		return "redirect:/companyinfo.html";
+		return "redirect:/setting.html";
 	}
 	
 	@RequestMapping(value = "/addDepartment", method = RequestMethod.POST)
-	public String addDepartment(DepartmentInfoForm departmentInfoForm){
+	public String addDepartment(SettingPage settingPage){
+		DepartmentInfoForm departmentInfoForm = settingPage.getDepartmentInfoForm();
 		System.out.println(departmentInfoForm.getName());
 		Department department = new Department();
 		department.setName(departmentInfoForm.getName());
 		this.departmentService.create(department);
-		return "redirect:/companyinfo.html";
+		return "redirect:/setting.html";
 	}
 	
 	@RequestMapping(value = "/editDepartment", method = RequestMethod.POST)
-	public String editDepartment(DepartmentInfoForm departmentInfoForm){
-
+	public String editDepartment(SettingPage settingPage){
+		DepartmentInfoForm departmentInfoForm = settingPage.getDepartmentInfoForm();
 		Department department = this.departmentService.findById((long) departmentInfoForm.getId());
 		department.setName(departmentInfoForm.getName());
 		this.departmentService.save(department);
-		return "redirect:/companyinfo.html";
+		return "redirect:/setting.html";
 	}
 	
 }
