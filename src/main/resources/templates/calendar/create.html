@@ -20,7 +20,7 @@
 					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
 					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
 					<li class="active"><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
-					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+					<li th:if="${currentUserInfo.user.role.name()} == 'ADMIN'"><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
 				</ul>
 				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
 					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
@@ -58,7 +58,7 @@
 							<option value="COMPANY" th:text="#{holiday.create.form.holidayType.COMPANY}"></option>
 						</select>
 					</div>
-					<input class="btn btn-xlarge login" type="submit" th:value="#{common.button.save}" />
+					<input class="btn btn-primary login" type="submit" th:value="#{common.button.save}" />
 				</form>
 			</div>
 		</div>

@@ -83,7 +83,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 				<div class="panel-heading">
 					<div class="title" th:text="#{setting.workhours.form.title}"></div>
 					<div class="bar-container">
-						<input class="btn btn-primary" type="submit" th:value="#{common.button.save}" />
+						<input th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary" type="submit" th:value="#{common.button.save}" />
 					</div>
 				</div>
 				<div class="panel-body">
@@ -95,7 +95,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 						<div class="col-md-6">
 							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.form}"></div>
 							<div class="col-md-10">
-								<select class="input-field" th:field="*{morningStart}">
+								<select class="input-field" th:field="*{morningStart}" th:disabled="${currentUserInfo.user.role.name()== 'ADMIN'}? 'no':'disabled' ">
 									<option th:each="it : *{morningHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
 								</select>
 							</div>
@@ -103,7 +103,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 						<div class="col-md-6">
 							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.to}"></div>
 							<div class="col-md-10">
-								<select class="input-field" th:field="*{moringEnd}">
+								<select class="input-field" th:field="*{moringEnd}" th:disabled="${currentUserInfo.user.role.name()== 'ADMIN'}? 'no':'disabled'">
 									<option th:each="it : *{morningHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
 								</select>
 							</div>
@@ -114,7 +114,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 						<div class="col-md-6">
 							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.form}"></div>
 							<div class="col-md-10">
-								<select class="input-field" th:field="*{afternoonStart}">
+								<select class="input-field" th:field="*{afternoonStart}" th:disabled="${currentUserInfo.user.role.name()== 'ADMIN'}? 'no':'disabled'">
 									<option th:each="it : *{afternoonHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
 								</select>
 							</div>
@@ -122,7 +122,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 						<div class="col-md-6">
 							<div class="col-md-2 sub-label" th:text="#{setting.workhours.form.label.to}"></div>
 							<div class="col-md-10">
-								<select class="input-field" th:field="*{afternoonEnd}">
+								<select class="input-field" th:field="*{afternoonEnd}" th:disabled="${currentUserInfo.user.role.name()== 'ADMIN'}? 'no':'disabled'">
 									<option th:each="it : *{afternoonHours}" th:value="${it.value}" th:text="#{${it.text}}"></option>
 								</select>
 							</div>
@@ -136,7 +136,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 			<div class="panel-heading">
 				<div class="title" th:text="#{setting.leavetyperule.table.title}"></div>
 				<div class="bar-container">
-					<input class="btn btn-primary" type="submit" data-toggle="modal" data-target="#addLeaveTypeRule" th:value="#{common.button.add}" />
+					<input th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary" type="submit" data-toggle="modal" data-target="#addLeaveTypeRule" th:value="#{common.button.add}" />
 				</div>
 			</div>
 			<div class="panel-body">
@@ -148,7 +148,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 							<th th:text="#{setting.leavetyperule.table.column.basedays}"></th>
 							<th th:text="#{setting.leavetyperule.table.column.increase}"></th>
 							<th th:text="#{setting.leavetyperule.table.column.maxdays}"></th>
-							<th th:text="#{setting.leavetyperule.table.column.operator}"></th>
+							<th th:if= "${currentUserInfo.user.role.name()} == 'ADMIN'" th:text="#{setting.leavetyperule.table.column.operator}"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -158,7 +158,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 							<td th:id = "baseDays+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.baseDays})}"></td>
 							<td th:id = "increaseDaysPerYear+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.increaseDaysPerYear})}"></td>
 							<td th:id = "maxDays+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.maxDays})}"></td>
-							<td><a href="#" class="edit" th:id = "${iterableObj.index + 1}" data-toggle="modal" data-target="#editLeaveTypeRule" th:text="#{common.button.setting}"></a></td>
+							<td th:if= "${currentUserInfo.user.role.name()} == 'ADMIN'" ><a href="#" class="edit" th:id = "${iterableObj.index + 1}" data-toggle="modal" data-target="#editLeaveTypeRule" th:text="#{common.button.setting}"></a></td>
 							<td style="display:none;" th:id = "leaveTypeId + ${iterableObj.index + 1}" th:text="${it.type.id}"> </td>
 						</tr>
 					</tbody>
@@ -178,7 +178,7 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="it,iterableObj : *{approvers}">
+						<tr th:each="it,iterableObj : *{approvers}" th:if = "(${it.user.id} == ${currentUserInfo.user.id}) or (${currentUserInfo.user.role.name()} == 'ADMIN')">
 							<td th:text="${iterableObj.index + 1}"></td>
 							<td th:text="${it.user.fullName}"></td>
 							<td class="approverColumn" th:if="${it.approver != null}">
@@ -190,6 +190,8 @@ $(document).on('show.bs.modal','#editLeaveTypeRule',function (event){
 								</div>
 							</td>
 						</tr>
+
+
 					</tbody>
 				</table>
 			</div>

@@ -9,6 +9,7 @@
 <link rel="stylesheet" th:href="@{/css/calendar.css}"></link>
 </head>
 <body class="page calendar" th:object="${calendarPage}">
+
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -20,7 +21,7 @@
 					<li><a href="#" th:href="@{/overview.html}" th:text="#{page.header.myLeaves}"></a></li>
 					<li><a href="#" th:href="@{/leave/request.html}" th:text="#{page.header.leaveRequest}"></a></li>
 					<li class="active"><a href="#" th:href="@{/calendar.html}" th:text="#{page.header.calendar}"></a></li>
-					<li><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
+					<li th:if="${currentUserInfo.user.role.name()} == 'ADMIN'"><a href="#" th:href="@{/setting.html}" th:text="#{page.header.setting}"></a></li>
 				</ul>
 				<ul th:if="${currentUserInfo != null}" class="nav navbar-nav navbar-right">
 					<li><a href="#" th:href="@{/information.html}" th:text="${currentUserInfo.fullName}"></a></li>
@@ -31,9 +32,11 @@
 	</nav>
 
 	<div class="page-body">
-		<div class="calendar-container">
-			<div th:each="month: *{months}" class="month col-md-4">
-				<div class="container">
+
+	<div class = "row container">
+		<div class="calendar-container col-md-9">
+			<div class = "row col-md-6" th:each="month: *{months}" >
+			<div class="month">
 					<div class="month-header">
 						<div th:text="#{'month.' + ${month.value}}"></div>
 					</div>
@@ -59,13 +62,14 @@
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 
-		<div class="holiday-summary">
-			<div>
-				<a class="btn btn-xlarge" href="#" th:href="@{/createHoliday.html}" th:text="#{calendar.button.create}"></a>
-			</div>
+		<div class ="holiday-container col-md-3">
+		
+			<a th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" class="btn btn-primary button" href="#" th:href="@{/createHoliday.html}" th:text="#{calendar.button.create}"></a>
+	
 			<div class="legend">
 				<div th:text="#{calendar.legend}"></div>
 				<div class="legend-item nationality">
@@ -81,8 +85,9 @@
 					<div class="text" th:text="#{calendar.today}"></div>
 				</div>
 			</div>
+
 			<div class="holidays-list">
-				<div th:text="#{calendar.allholidays}"></div>
+			<div th:text="#{calendar.allholidays}"></div>
 				<ul>
 					<li th:each="holiday : *{holidays}">
 						<div class="color" th:attr="holiday=${holiday.holidayType}" ></div>
@@ -92,8 +97,8 @@
 				</ul>
 			</div>
 		</div>
+
 	</div>
-
-
+	</div>
 </body>
 </html>

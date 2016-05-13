@@ -1,8 +1,15 @@
 .page.calendar .calendar-container {
-  min-width: 1200px;
   margin: 0 auto;
   float: left;
-  width: 80%;
+}
+
+.page.calendar .row.container{
+	
+}
+.page.calendar .holiday-container{
+	position: fixed;
+	right:2%;
+	top:12%;
 }
 
 .page.calendar .holiday-summary {
@@ -11,8 +18,8 @@
 }
 
 .page.calendar .month {
-  min-height: 320px;
-  margin-bottom : 20px;
+  height: 240px;
+  width: 90%;
 }
 
 .page.calendar .month .container {
@@ -25,8 +32,8 @@
 }
 
 .page.calendar .month-header {
-  height: 40px;
-  line-height: 38px;
+  height: 30px;
+  line-height: 30px;
   border-bottom: 2px solid cadetblue;
   color: cadetblue;
   font-weight: bold;
@@ -36,7 +43,7 @@
 .page.calendar .week {
   clear: both;
   display: block;
-  height: 50px;
+  height: 30px;
   position: relative;
   border-bottom: 1px solid #ccc;
 }
@@ -47,7 +54,7 @@
 }
 
 .page.calendar .day {
-  width: 50px;
+  width: 40px;
   height: 100%;
   text-align: center;
   cursor: pointer;
@@ -65,7 +72,7 @@
   right: 0;
   left: 0;
   bottom: 0;
-  line-height: 50px;
+  line-height: 30px;
 }
 
 .page.calendar .day-container.today {
@@ -148,7 +155,7 @@
 }
 
 .page.calendar .holidays-list {
-  margin-top: 50px;
+  margin-top : 25px;
 }
 
 .page.calendar .holidays-list li {
@@ -179,4 +186,8 @@
 .page.calendar .holidays-list .name {
   float: left;
   padding: 0 10px;
+}
+
+.page.calendar a.btn.btn-primary.button{
+  margin-top: 15px;
 }

@@ -1,8 +1,8 @@
 INSERT INTO USER (id,email,first_name,last_name,password,role) VALUES (1,'banzhao.huang@sap.com','banzhao','huang','$2a$10$EhPOZsT1CAArm/JCLJtW7.4BuPHNz3BFcsFWmzZeRM4p33ee7yufa',1);
-INSERT INTO USER (id,email,first_name,last_name,password,role) VALUES (2,'ultra7677@gmail.com','jacky','mao','$2a$10$EhPOZsT1CAArm/JCLJtW7.4BuPHNz3BFcsFWmzZeRM4p33ee7yufa',1);
+INSERT INTO USER (id,email,first_name,last_name,password,role) VALUES (2,'ultra7677@gmail.com','jacky','mao','$2a$10$EhPOZsT1CAArm/JCLJtW7.4BuPHNz3BFcsFWmzZeRM4p33ee7yufa',0);
 
-INSERT INTO EMPLOYEE (id,email,first_name,last_name,user_id,avatarid) VALUES (1,'banzhao.huang@sap.com','banzhao','huang',1,0);
-INSERT INTO EMPLOYEE (id,email,first_name,last_name,user_id,avatarid) VALUES (2,'ultra7677@gmail.com','jacky','mao',2,0);
+INSERT INTO EMPLOYEE (id,email,first_name,last_name,user_id,avatarid,role) VALUES (1,'banzhao.huang@sap.com','banzhao','huang',1,0,1);
+INSERT INTO EMPLOYEE (id,email,first_name,last_name,user_id,avatarid,role) VALUES (2,'ultra7677@gmail.com','jacky','mao',2,0,0);
 
 INSERT INTO APPROVER (id,user_id) VALUES(1,1);
 INSERT INTO APPROVER (id,user_id) VALUES(2,2);

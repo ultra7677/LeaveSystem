@@ -44,10 +44,10 @@ $(document).on('mouseenter', '.departmentInfo', function (e) {
 
     var offset = 13 + (this.id - 1)*31;
 
-    var r = $('<button/>',
+    var r = $('<button th:if="${currentUserInfo.user.role.name()} == 'ADMIN'"/>',
     {
         type:'button',
-        class:'btn btn-default btn-xs',
+        class:'btn btn-primary btn-xs',
         id:'editButton'+this.id,
         'data-toggle':'modal',
         'data-target':'#editDepartment',
@@ -200,7 +200,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
  					</table>
  				</div>
   				<div class= "media-right">
-  					<button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#editCompany"> Edit</button>
+  					<button th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#editCompany"> Edit</button>
   				</div>
 			</div>    
 		</div>
@@ -227,7 +227,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
             </table>
           </div>
           <div class= "media-right" id="media-department-right">
-            <button id="editButton0" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addDepartment">Add</button>
+            <button th:if="${currentUserInfo.user.role.name()} == 'ADMIN'" id="editButton0" type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addDepartment">Add</button>
           </div>
         </div>
       </div>
