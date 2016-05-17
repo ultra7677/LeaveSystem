@@ -1,9 +1,26 @@
 body {
-  background-image: url("/imgs/bg.jpg");
+    background-image: url("/imgs/bg.png");
+  	background-size: cover;
+	background-size: auto 1400px;
+    background-repeat: no-repeat;
 }
 
 .btn.register{
   margin-top: 20px;
+}
+
+.input-label {
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  color: #CCCCCC;
+  font-size: 14px;
+}
+
+.panel.panel-default.action-panel{
+	left : 30%;
+	top : 10%;
+	right : 0px;
 }
 
 .useful-links .forget-password {

@@ -219,8 +219,9 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
 </div>
 
 	<div class="page-body">
-
-	<div class="panel panel-default" th:object ="${settingPage.companyInfoForm}">
+	
+	<div class="row">
+	<div class="panel panel-default up col-md-5" th:object ="${settingPage.companyInfoForm}">
 		<div class="panel-heading" th:text="#{company.info.header}"></div>
 		<div class="panel-body">
   			<div class="media">
@@ -249,7 +250,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
 		</div>
 	</div>
 
-	<div class="panel panel-default" th:object = "${settingPage.departmentInfoForm}">
+	<div class="panel panel-default up col-md-5" th:object = "${settingPage.departmentInfoForm}">
       <div class="panel-heading" th:text="#{company.info.department}"> </div>
       <div class="panel-body">
         <div class="media">
@@ -275,7 +276,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
         </div>
       </div>
   </div>
-
+</div>
 
 		<form class="workhours-form" action="#" th:action="@{/setting/workhours}" th:object="${settingPage.workHoursForm}" method="POST">
 			<div class="panel panel-default workhours">

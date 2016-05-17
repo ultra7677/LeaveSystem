@@ -82,15 +82,15 @@
   position: absolute;
   left: 0;
   right: 0;
-  background: cadetblue;
+  background: #55A57C;
 }
 
 .page.calendar .day-container[holiday="COMPANY"] {
-  background: #ebccd1;
+  background: #71AADA;
 }
 
 .page.calendar .day-container[holiday="NATIONALITY"] {
-  background: #a94442;
+  background: #E47775;
 }
 
 .page.calendar .day[dayofweek="SUNDAY"] {
@@ -143,15 +143,15 @@
 }
 
 .page.calendar .legend-item.nationality .color {
-  background: #a94442;
+  background: #E47775;
 }
 
 .page.calendar .legend-item.company .color {
-  background: #ebccd1;
+  background: #71AADA;
 }
 
 .page.calendar .legend-item.today .color {
-  background: cadetblue;
+  background: #55A57C;
 }
 
 .page.calendar .holidays-list {
@@ -171,11 +171,11 @@
 }
 
 .page.calendar .holidays-list .color[holiday="COMPANY"] {
-  background: #ebccd1;
+  background: #71AADA;
 }
 
 .page.calendar .holidays-list .color[holiday="NATIONALITY"] {
-  background: #a94442;
+  background: #E47775;
 }
 
 .page.calendar .holidays-list .date {

@@ -69,56 +69,56 @@ $(document).on("click", ".modal-dialog .modal-body .row", function(evn) {
 					<tr>
 						<th>
 							<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-							<span th:text="#{employee.info.name}"></span>
-							<span th:if="${employeeInfoForm.name != null}" th:text="${employeeInfoForm.name}"></span>
+							<span class="span-heading" th:text="#{employee.info.name}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.name != null}" th:text="${employeeInfoForm.name}"></span>
 						</th>
 						<th>
 							<span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-							<span th:text="#{employee.info.email}"></span>
-							<span th:if="${employeeInfoForm.email != null}" th:text="${employeeInfoForm.email}"></span>
+							<span class="span-heading" th:text="#{employee.info.email}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.email != null}" th:text="${employeeInfoForm.email}"></span>
 						</th>
   					</tr>
 					<tr>
 						<th>
 							<span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
-							<span th:text="#{employee.info.tel}"></span>
-							<span th:if="${employeeInfoForm.phoneNumber != null}" th:text="${employeeInfoForm.phoneNumber}"></span>
+							<span class="span-heading" th:text="#{employee.info.tel}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.phoneNumber != null}" th:text="${employeeInfoForm.phoneNumber}"></span>
 						</th>
 						<th>
 							<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-							<span th:text="#{employee.info.birthdate}"></span>
-							<span th:if="${employeeInfoForm.birthDate != null}" th:text="${employeeInfoForm.birthDate}"></span>
+							<span class="span-heading" th:text="#{employee.info.birthdate}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.birthDate != null}" th:text="${employeeInfoForm.birthDate}"></span>
 						</th>
   					</tr>
   					<tr>
   						<th>
   						    <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-							<span th:text="#{employee.info.department}"></span>
-							<span th:if="${employeeInfoForm.department != null}" th:text="${employeeInfoForm.department}"></span>
+							<span class="span-heading" th:text="#{employee.info.department}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.department != null}" th:text="${employeeInfoForm.department}"></span>
   					    </th>
   					    <th>
   					        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-  					    	<span th:text="#{employee.info.position}"></span>
-  					    	<span th:if="${employeeInfoForm.position != null}" th:text="${employeeInfoForm.position}"></span>
+  					    	<span class="span-heading" th:text="#{employee.info.position}"></span>
+  					    	<span class="span-text" th:if="${employeeInfoForm.position != null}" th:text="${employeeInfoForm.position}"></span>
   					    </th>
   					</tr>
   					<tr>
   					    <th>
   					        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-							<span th:text="#{employee.info.gender}"></span>
-							<span th:if="${employeeInfoForm.gender != null}" th:text="${employeeInfoForm.gender}"></span>
+							<span class="span-heading" th:text="#{employee.info.gender}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.gender != null}" th:text="${employeeInfoForm.gender}"></span>
   					    </th>
   					    <th>
   					        <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-							<span th:text="#{employee.info.entrydate}"></span>
-							<span th:if="${employeeInfoForm.entryDate != null}" th:text="${employeeInfoForm.entryDate}"></span>
+							<span class="span-heading" th:text="#{employee.info.entrydate}"></span>
+							<span class="span-text" th:if="${employeeInfoForm.entryDate != null}" th:text="${employeeInfoForm.entryDate}"></span>
   					    </th>
   					</tr>
   					<tr>
   						<th>
   							<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
-  							<span th:text= "#{employee.info.company}"></span>
-							<span th:text= "${companyInfo.name}"></span>
+  							<span class="span-heading" th:text= "#{employee.info.company}"></span>
+							<span class="span-text" th:text= "${companyInfo.name}"></span>
   						</th>
   						<th>
   						</th>
@@ -127,7 +127,7 @@ $(document).on("click", ".modal-dialog .modal-body .row", function(evn) {
 				</table>
   			</div>
   			<div class= "media-right">
-  				<a href="#" th:href="@{/edit.html}" role="button" class="btn btn-default btn-xs"> Edit</a>
+  				<a href="#" th:href="@{/edit.html}" role="button" class="btn btn-primary btn-xs"> Edit</a>
   			</div>
   		</div>
 	</div>

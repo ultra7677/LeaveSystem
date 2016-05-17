@@ -11,12 +11,23 @@ ul, menu, dir {
 	max-width : 970px;
 }
 
+.panel.panel-default.up{
+	margin-left : 30px;
+	margin-top : 0px;
+	padding-right: 0px;
+    padding-left: 0px;
+    width:38.7%;
+    min-height : 270px;
+}
+
 .page-body {
   padding: 30px 50px;
 }
 
 .navbar {
   margin-bottom: 0px;
+  background-color: #f8f8f8;
+  border-color: #e7e7e7;
 }
 
 .input-field {
@@ -46,7 +57,7 @@ ul, menu, dir {
   height: 30px;
   line-height: 30px;
   width: 100%;
-  color: #2B1E1E;
+  color: #000000;
   font-size: 14px;
 }
 
@@ -73,7 +84,7 @@ ul, menu, dir {
 .btn-xlarge {
   height: 45px;
   width: 100%;
-  background-color: #4A90E2;
+  background-color: #6283AB;
   border-radius: 5px;
   color: #fff;
   border: none;
@@ -87,7 +98,7 @@ ul, menu, dir {
 }
 
 .useful-links a {
-  color: #504949;
+  color: #CAC6C6;
   font-size: 12px;
 }
 
@@ -105,9 +116,10 @@ form .form-error-message {
 }
 
 .panel.action-panel .panel-heading {
-  background: rgba(245, 245, 245, 0.5);
+  background: rgba(0,0,0,.0001);
   border-bottom: 1px solid white;
   font-weight: bold;
+  color: #C5C5C5;
 }
 
 .hidden {
@@ -121,12 +133,20 @@ form .form-error-message {
 .panel .panel-heading .bar-container {
   position: absolute;
   right: 15px;
-  top: 0;
+  top: 7px;
   bottom: 0;
   padding: 3px 0px;
 }
 
 .btn-primary {
-  background-color: #4A90E2;
-  border-color: #4A90E2;
+  background-color: #B4BCC5;
+  border-color: #B4BCC5;
+}
+
+.span-text{
+  color : #565656;
+}
+
+.span-heading{
+  color : #2F2C2C;	
 }
