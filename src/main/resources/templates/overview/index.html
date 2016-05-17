@@ -89,7 +89,7 @@
 					<tbody>
 						<tr th:each="it,iterableObj : *{leaveInfos}">
 							<td th:text="${iterableObj.index + 1}"></td>
-							<td th:text="${it.leaveType.name}"></td>
+							<td th:text="${it.leaveType.foreignName}"></td>
 							<td th:text="${it.fromDate}"></td>
 							<td th:text="${it.toDate}"></td>
 							<td th:text="${@formatterService.formatTotalHours(it.totalHours)}"></td>
@@ -121,7 +121,7 @@
 						<tr th:each="it,iterableObj : *{approveLeaveTable.leaves}">
 							<td th:text="${iterableObj.index + 1}"></td>
 							<td th:text="${it.user.fullName}"></td>
-							<td th:text="${it.type.name}"></td>
+							<td th:text="${it.type.foreignName}"></td>
 							<td th:text="${@formatterService.formatDate(it.startDateTime)}"></td>
 							<td th:text="${@formatterService.formatDate(it.endDateTime)}"></td>
 							<td th:text="${@formatterService.formatTotalHours(it.total)}"></td>
@@ -161,7 +161,7 @@
 						<tr th:each="it,iterableObj : *{myLeaveTable.leaves}">
 							<td th:text="${iterableObj.index + 1}"></td>
 							<td th:text="${it.user.fullName}"></td>
-							<td th:text="${it.type.name}"></td>
+							<td th:text="${it.type.foreignName}"></td>
 							<td th:text="${@formatterService.formatDate(it.startDateTime)}"></td>
 							<td th:text="${@formatterService.formatDate(it.endDateTime)}"></td>
 							<td th:text="${@formatterService.formatTotalHours(it.total)}"></td>

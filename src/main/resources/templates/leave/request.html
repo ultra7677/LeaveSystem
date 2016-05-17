@@ -43,7 +43,7 @@
 				<div class="input-field-group">
 					<div class="input-label" th:text="#{leave.request.form.leaveType}"></div>
 					<select class="input-field " th:field="*{leaveType}">
-						<option th:each="it : ${@leaveTypeService.findAll()}" th:value="${it.id}" th:text="${it.name}"></option>
+						<option th:each="it : ${@leaveTypeService.findAll()}" th:value="${it.id}" th:text="${it.foreignName}"></option>
 					</select>
 				</div>
 				<div class="input-field-group" >

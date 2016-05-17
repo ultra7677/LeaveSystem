@@ -354,7 +354,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
 					<tbody>
 						<tr class = "leavetyperule-form" th:each="it,iterableObj : *{rules}">
 							<td th:text="${iterableObj.index + 1}"></td>
-							<td th:id = "nameField+${iterableObj.index + 1}"  th:text="${it.type.name}"></td>
+							<td th:id = "nameField+${iterableObj.index + 1}"  th:text="${it.type.foreignName}"></td>
 							<td th:id = "baseDays+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.baseDays})}"></td>
 							<td th:id = "increaseDaysPerYear+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.increaseDaysPerYear})}"></td>
 							<td th:id = "maxDays+${iterableObj.index + 1}"  th:text="#{setting.leavetyperule.table.days_format(${it.maxDays})}"></td>
@@ -432,7 +432,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
              					<div class="input-field-group">
                   					<div class="input-label" th:text="#{setting.leavetyperule.table.column.leavetype}"></div>
                   					<select class="input-field" th:field="*{leaveTypeId}">
-										<option th:each="it : ${settingPage.leaveTypeRuleForm.getLeaveTypes()}" th:text="${it.getName()}" th:value="${it.getId()}"></option>
+										<option th:each="it : ${settingPage.leaveTypeRuleForm.getLeaveTypes()}" th:text="${it.getForeignName()}" th:value="${it.getId()}"></option>
 									</select>
               					</div>
               					<div class="input-field-group">
@@ -470,7 +470,7 @@ $(document).on('show.bs.modal','#editDepartment',function (event){
              					<div class="input-field-group">
                   					<div class="input-label" th:text="#{setting.leavetyperule.table.column.leavetype}"></div>
                   					<select class="input-field" th:field="*{leaveTypeId}" >
-										<option class="leavetypes" th:id="${it.getId()}" th:each="it : ${settingPage.leaveTypeRuleForm.getLeaveTypes()}" th:text="${it.getName()}" th:value="${it.getId()}"></option>
+										<option class="leavetypes" th:id="${it.getId()}" th:each="it : ${settingPage.leaveTypeRuleForm.getLeaveTypes()}" th:text="${it.getForeignName()}" th:value="${it.getId()}"></option>
 									</select>
               					</div>
 								<div class="input-field-group" th:classappend="${#fields.hasErrors('baseDays')}? 'error' : ''">

@@ -29,6 +29,14 @@ public class LeaveType {
 	@Column(nullable= false,unique=true)
 	private String foreignName;
 
+	public String getForeignName() {
+		return foreignName;
+	}
+
+	public void setForeignName(String foreignName) {
+		this.foreignName = foreignName;
+	}
+
 	public long getId() {
 		return id;
 	}
