@@ -95,7 +95,9 @@
 
 					<div class="input-field-group">
 						<div class="input-label" th:text="#{employee.info.department}"></div>
-						<input class="input-field " type="text" th:field="*{department}" th:value="${employeeInfoForm.department}" />
+						<select class="input-field " th:field="*{department}">
+							<option th:each="it : ${@departmentService.findAll()}" th:value="${it.name}" th:text="${it.name}"></option>
+						</select>
 					</div>
 
 					<div class="input-field-group">
@@ -114,6 +116,7 @@
 					</div>		
 					
 					<button class="btn btn-primary" type="submit" th:text="#{common.button.save}"> </button>
+					<a th:href="@{/information.html}" class="btn btn-default" role="button" th:text="#{common.button.cancel}" style="float:right"></a>
 				</form>
 			</div>
 	</div>

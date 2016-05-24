@@ -31,6 +31,7 @@ import com.sapanywhere.app.model.setting.ApproverListView;
 import com.sapanywhere.app.repository.EmployeeRepository;
 import com.sapanywhere.app.service.ApproverService;
 import com.sapanywhere.app.service.CompanyService;
+import com.sapanywhere.app.service.DepartmentService;
 import com.sapanywhere.app.service.EmployeeService;
 import com.sapanywhere.app.service.FileService;
 import com.sapanywhere.app.service.UserService;
@@ -61,6 +62,9 @@ public class EmployeeController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private DepartmentService departmentService;
+	
 	@ModelAttribute("companyInfo")
 	public Company getCompanyInfo(){
 		return this.companyService.findById((long) 1);
@@ -83,6 +87,7 @@ public class EmployeeController {
 	public String createEditForm(@AuthenticationPrincipal UserInfo userInfo,EmployeeInfoForm employeeInfoForm){
 	    Employee employee = employeeRepository.findByUser(userInfo.getUser());
 	    employeeInfoForm.setByEmployee(employee);    
+	    
 		logger.info("load edit.html");
 		return "/employee/edit";
 	}

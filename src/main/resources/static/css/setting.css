@@ -1,3 +1,7 @@
+.departmentInfo{
+	width: 50px;
+}
+
 
 .page.setting .modal-dialog {
   width: 500px;
@@ -5,18 +9,17 @@
 }
 
 .page.setting .modal-dialog .modal-content {
-  min-height: 600px;
 }
 
 .page.setting .modal-dialog .modal-content .modal-footer {
   bottom: 0;
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
 }
 
 .page.setting .modal-dialog .modal-content .modal-body {
-  padding-top: 0px;
+ padding-top : 0px;
 }
 
 .page.setting .modal-dialog .modal-content .modal-body .row {

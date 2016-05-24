@@ -4,12 +4,11 @@
 }
 
 .employee.information .modal-dialog .modal-content {
-  min-height: 600px;
 }
 
 .employee.information .modal-dialog .modal-content .modal-footer {
   bottom: 0;
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
 }

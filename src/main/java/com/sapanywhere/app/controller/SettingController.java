@@ -139,16 +139,12 @@ public class SettingController {
 	@RequestMapping(value = "/setting/workHours", method = RequestMethod.POST)
 	public String updateWorkHours(@Valid WorkHoursForm workHoursForm,
 			BindingResult result) throws Exception {
+		
 		if (result.hasErrors()) {
 			return "/settings/index";
 		}
 		
-		return "/settings/index";
-		/*if(userApproverDTO != null && userApproverDTO.getId()!= null && userApproverDTO.getApproverId() != null){
-			this.userApproverService.update(userApproverDTO.getId(), userApproverDTO.getApproverId());
-		}else{
-			throw new Exception();
-		}*/
+		return "redirect:/setting.html";
 	}
 	
 	@RequestMapping(value = "/addLeaveTypeRule", method = RequestMethod.POST)
