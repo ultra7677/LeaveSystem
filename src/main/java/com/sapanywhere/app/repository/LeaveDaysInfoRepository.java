@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sapanywhere.app.entity.LeaveDaysInfo;
+import com.sapanywhere.app.entity.LeaveType;
 import com.sapanywhere.app.entity.User;
 
 public interface LeaveDaysInfoRepository extends JpaRepository<LeaveDaysInfo, Long>{
 
 	List<LeaveDaysInfo> findAllByUserAndYear(User user,int year);
+	List<LeaveDaysInfo> findAllByUserAndType(User user,LeaveType type);
 }

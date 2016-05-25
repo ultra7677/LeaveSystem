@@ -1,326 +1,221 @@
 package com.sapanywhere.app.controller;
 
+import java.io.IOException;
 import java.util.List;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sapanywhere.app.entity.OauthData;
 import com.sapanywhere.app.entity.User;
+import com.sapanywhere.app.exception.BusinessException;
 import com.sapanywhere.app.model.BindForm;
-import com.sapanywhere.app.model.OauthToken;
-import com.sapanywhere.app.model.SAPAnywhereUserInfo;
-import com.sapanywhere.app.properties.AppProperties;
+import com.sapanywhere.app.oauth.ApiClient;
+import com.sapanywhere.app.oauth.AppProperties;
+import com.sapanywhere.app.oauth.ErrorCode;
+import com.sapanywhere.app.oauth.OauthClient;
+import com.sapanywhere.app.oauth.TokenInfo;
+import com.sapanywhere.app.oauth.UserInfo;
 import com.sapanywhere.app.repository.OauthDataRepository;
-import com.sapanywhere.app.repository.UserRepository;
-import com.sapanywhere.app.utils.HttpUtils;
-import com.sapanywhere.app.utils.SSLContextUtils;
+import com.sapanywhere.app.service.UserService;
 import com.sapanywhere.app.utils.SessionNameUtils;
+
+
 
 @Controller
 public class OauthController {
 
 	private static Logger logger = Logger.getLogger(OauthController.class);
-	
+
+	public final static String OP_INSTALL = "install";
+	public final static String OP_UNINSTALL = "uninstall";
+	public final static String PURPOSE_TESTING = "testing";
+
 	@Autowired
 	private AppProperties appProperties;
-	
+
 	@Autowired
 	private OauthDataRepository oauthDataRepository;
-	
+
 	@Autowired
-	private UserRepository userRepository;
-	
+	private UserService userService;
+
+	@Autowired
+	private OauthClient oauthClient;
+
+	@Autowired
+	private ApiClient apiClient;
+
+	@Autowired
+	private HttpSession session;
+
 	@RequestMapping(value = "/oauth/bind.html", method = RequestMethod.GET)
-	public String loadbindPage(BindForm bindForm, Model model) {
-		if(!model.containsAttribute(SessionNameUtils.OAUTH)){
-			return "redirect:/errors/500";
+	public String bindPage(HttpSession session, Model model) {
+		OauthData oauthData = (OauthData) session
+				.getAttribute(SessionNameUtils.OAUTH);
+		if (oauthData == null) {
+			return "redirect:/500.html";
 		}
-		
-		OauthData oauthData = (OauthData)model.asMap().get(SessionNameUtils.OAUTH);
-		bindForm.setSapAccount(oauthData.getUserEmail());
-		bindForm.setEmail(oauthData.getUserEmail());
-		bindForm.setFirstName(oauthData.getUserName());
-		
+
+		BindForm bindForm = new BindForm(oauthData);
+		model.addAttribute(bindForm);
 		return "/oauth/bind";
 	}
-	
-	@RequestMapping(value = "/oauth/bind", method = RequestMethod.POST)
-	public String bind(@Valid BindForm bindForm, BindingResult result, Model model){
-		bindForm.onValid(result);
+
+	@RequestMapping(value = "/oauth/userBind", method = RequestMethod.POST)
+	public String bind(@Valid BindForm bindForm, BindingResult result,
+			HttpSession session) {
+		OauthData oauthData = (OauthData) session
+				.getAttribute(SessionNameUtils.OAUTH);
+		if (oauthData == null) {
+			return "redirect:/500.html";
+		}
+
+		bindForm.onValid(result, oauthData);
 		if (result.hasErrors()) {
 			return "/oauth/bind";
 		}
-		
-		if(!model.containsAttribute(SessionNameUtils.OAUTH)){
-			return "redirect:/errors/500";
-		}
-		
-		OauthData oauthData = (OauthData)model.asMap().get(SessionNameUtils.OAUTH);
-		if(StringUtils.equalsIgnoreCase(oauthData.getUserEmail(), bindForm.getSapAccount())){
-			FieldError error = new FieldError("bindForm","sapAccount",null, false, new String[]{"bind.error.sapaccountnotmatch"}, null, null);
-			result.addError(error);
+
+		try {
+			User user = this.userService.create(bindForm.parse());
+			this.userService.autoLogin(user.getEmail());
+		} catch (Exception ex) {
+			logger.error(ex);
+			if (ex.getCause() != null
+					&& ex.getCause().getClass() == ConstraintViolationException.class) {
+				bindForm.addFieldError(result, "email", "bind.error.emailexist");
+			} else {
+				bindForm.addError(result, "bind.error.failed");
+			}
+
 			return "/oauth/bind";
 		}
 
-		try{
-			User user = this.userRepository.save(bindForm.parse());
-			model.addAttribute(SessionNameUtils.USER, user);
-		}catch(Exception ex){
-			logger.error(ex);
-			if(ex.getCause() != null && ex.getCause().getClass() == ConstraintViolationException.class){
-				FieldError error = new FieldError("bindForm","email",null, false, new String[]{"bind.error.emailexist"}, null, null);
-				result.addError(error);
-			}else{
-				result.reject("bind.error.failed");
-			}
-
-			return "/accounts/bind";
-		}
-		
-		return "redirect:/index";
+		return "redirect:/";
 	}
-	
+
 	@RequestMapping(value = "/oauth/login", method = RequestMethod.POST)
-	public String login(){
-		if(!this.verifyAppConfiguration() ){
-			return "redirect:/errors/500";
-		}
-		
-		String authorizeUrl = String.format("%s/oauth2/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s",
-				this.appProperties.getSapanywhereIdpUrl(),
-				this.appProperties.getAppId(),
-				this.appProperties.getAppScope(),
-				this.appProperties.getRootCallbackUrl());
-		
-		return "redirect:" + authorizeUrl;
+	public String login() throws BusinessException {
+		return "redirect:" + this.oauthClient.getAuthorizeURL();
 	}
-	
+
 	@RequestMapping(value = "/oauth/callback", method = RequestMethod.GET)
-	public String callback(@RequestParam(value="code") String code, Model model){
-		OauthToken oauthToken = this.getOauthToken(code);
-		if(oauthToken == null ){
-			return "redirect:/errors/500";
+	public String callback(
+			@RequestParam(value = "code", required = false) String code,
+			HttpSession session) throws BusinessException {
+
+		if (StringUtils.isEmpty(code)) {
+			return this.login();
 		}
-		
-		SAPAnywhereUserInfo userInfo = this.getUserInfo(oauthToken.getAccess_token());
-		if(userInfo == null){
-			return "redirect:/errors/500";
+
+		TokenInfo oauthToken = this.oauthClient.getTokenInfoByCode(code,
+				this.appProperties.getApplicationUrl());
+
+		UserInfo userInfo = this.apiClient.getUserInfo(oauthToken
+				.getAccessToken());
+
+		OauthData oauthData = this.updateOauthData(oauthToken, userInfo);
+		session.setAttribute(SessionNameUtils.OAUTH, oauthData);
+
+		User user = this.userService.findBySAPAccount(userInfo.getEmail());
+		if (user == null) {
+			return "redirect:/oauth/bind.html";
 		}
-		
-		OauthData oauthData = this.updateOauthData(oauthToken,userInfo);
-		model.addAttribute(SessionNameUtils.OAUTH, oauthData);
-		
-		User user = this.userRepository.findBySapAccount(userInfo.getUserEmail());
-		if(user == null){
-			return "redirect:/oauth/bind";
-		}
-		
-		model.addAttribute(SessionNameUtils.USER, user);
-		
-		return "redirect:/index";
+
+		this.userService.autoLogin(user.getEmail());
+		return "redirect:/";
 	}
-	
+
 	@RequestMapping(value = "/oauth/install", method = RequestMethod.GET)
-	public String install(@RequestParam(value="sapanywhere") String sapanywhere,
-			@RequestParam(value="timestamp") String timestamp,
-			@RequestParam(value="hmac") String hmac,
-			@RequestParam(value="op",required = false) String op,
-			@RequestParam(value="code",required = false) String code,
-			Model model){
-		
-		if(!this.verifyAppConfiguration() || !this.verifyInstall(sapanywhere, timestamp, hmac)){
-			return "redirect:/errors/500";
+	public void install(HttpSession session, HttpServletRequest request,
+			HttpServletResponse response) throws BusinessException, IOException {
+		String timestamp = request.getParameter("timestamp");
+		String hmac = request.getParameter("hmac");
+		String op = request.getParameter("op");
+		this.oauthClient.verifySignature(timestamp, hmac);
+		if (StringUtils.equalsIgnoreCase(op, OP_INSTALL)) {
+			this.startAuthorize(request, response);
+		} else if (StringUtils.equalsIgnoreCase(op, OP_UNINSTALL)) {
+			this.uninstall(request, response);
+		} else {
+			this.exchangeToken(request, response);
 		}
-		
-		if(StringUtils.equalsIgnoreCase(op, "install")){
-			String authorizeUrl = this.getInstallAuthorizeUrl(sapanywhere);
-			if(StringUtils.isEmpty(authorizeUrl)){
-				return "redirect:/errors/500";
-			}
-			
-			return "redirect:" + authorizeUrl;
-		}
-		
-		if(StringUtils.isEmpty(code)){
-			return "redirect:/errors/500";
-		}
-		
-		OauthToken oauthToken = this.getInstallOauthToken(sapanywhere, code);
-		if(oauthToken == null ){
-			return "redirect:/errors/500";
-		}
-		
-		SAPAnywhereUserInfo userInfo = this.getUserInfo(oauthToken.getAccess_token());
-		if(userInfo == null){
-			return "redirect:/errors/500";
-		}
-		OauthData oauthData = this.updateOauthData(oauthToken,userInfo);
-		model.addAttribute(SessionNameUtils.OAUTH, oauthData);
-		return "redirect:/index";
 	}
-	
-	private OauthToken getOauthToken(String authorizeCode) {
-		try{
-			SSLContextUtils.byPassCert();
-			
-			String url = String.format("%s/oauth2/token?client_id=%s&client_secret=%s&grant_type=authorization_code&code=%s&redirect_uri=%s",
-					this.appProperties.getSapanywhereIdpUrl(),
-					this.appProperties.getAppId(), 
-					this.appProperties.getAppSecret(), 
-					authorizeCode, 
-					this.appProperties.getRootCallbackUrl());
-			
-			ObjectMapper objectMapper = new ObjectMapper();
-			String content = HttpUtils.get(url);
-			if(!StringUtils.isEmpty(content)){
-				return objectMapper.readValue(content, OauthToken.class);
-			}
-		}catch(Exception ex){
-			logger.error(ex);
-		}
 
-		return null;
-    }
-	
-	private OauthToken getInstallOauthToken(String sapanywhere, String authorizeCode){
-		try{
-			SSLContextUtils.byPassCert();
-			
-			String url = String.format("%s/oauth/token?client_id=%s&client_secret=%s&grant_type=authorization_code&code=%s&redirect_uri=%s",
-					sapanywhere, 
-					this.appProperties.getAppId(),
-					this.appProperties.getAppSecret(), 
-					authorizeCode,
-					this.appProperties.getInstallCallbackUrl());
-			
-			ObjectMapper objectMapper = new ObjectMapper();
-			String content = HttpUtils.get(url);
-			if(!StringUtils.isEmpty(content)){
-				return objectMapper.readValue(content, OauthToken.class);
-			}
-			
-		}catch(Exception ex){
-			logger.error(ex);
-		}
-
-		return null;
-    }
-	
-	
-	private SAPAnywhereUserInfo getUserInfo(String accessToken){
-		try{
-			SSLContextUtils.byPassCert();
-			String url = String.format("%s/UserInfo?access_token=%s", this.appProperties.getSapanywhereOpenApiUrl(),accessToken);
-			ObjectMapper objectMapper = new ObjectMapper();
-			String content = HttpUtils.get(url);
-			if(!StringUtils.isEmpty(content)){
-				return objectMapper.readValue(content, SAPAnywhereUserInfo.class);
-			}
-		}catch(Exception ex){
-			logger.error(ex);
-		}
-
-		return null;
-	}
-	
-	private OauthData updateOauthData(OauthToken oauthToken, SAPAnywhereUserInfo userInfo){
-		List<OauthData> oauthDatas = this.oauthDataRepository.findByUserEmail(userInfo.getUserEmail());
+	private OauthData updateOauthData(TokenInfo oauthToken, UserInfo userInfo) {
+		List<OauthData> oauthDatas = this.oauthDataRepository
+				.findByCompanyCodeAndUserCode(userInfo.getCompanyCode(),
+						userInfo.getCode());
 		OauthData oauthData = null;
-		if(oauthDatas.size() == 0){
+		if (oauthDatas.size() == 0) {
 			oauthData = new OauthData();
-		}else{
+		} else {
 			oauthData = oauthDatas.get(0);
 		}
-		
-		oauthData.setAccessToken(oauthToken.getAccess_token());
-		oauthData.setRefreshToken(oauthToken.getRefresh_token());
+
+		oauthData.setAccessToken(oauthToken.getAccessToken());
+		oauthData.setRefreshToken(oauthToken.getRefreshToken());
 		oauthData.setScope(oauthToken.getScope());
-		oauthData.setAudience(userInfo.getAudience());
-		oauthData.setTenantId(userInfo.getTenantId());
-		oauthData.setUserEmail(userInfo.getUserEmail());
-		oauthData.setUserName(userInfo.getUserName());
-		oauthData.setUserPhone(userInfo.getUserPhone());
+		oauthData.setUserEmail(userInfo.getEmail());
+		oauthData.setCompanyCode(userInfo.getCompanyCode());
+		oauthData.setUserCode(userInfo.getCode());
 		return this.oauthDataRepository.save(oauthData);
 	}
-	
-	private boolean verifyInstall(String sapanywhere, String timestamp,String hmac){
-		String appSecret = this.appProperties.getAppSecret();
-		
-		String content = String.format("sapanywhere=%s&timestamp=%s", sapanywhere, timestamp);
-		try {
-			Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-			SecretKeySpec secret_key = new SecretKeySpec(appSecret.getBytes("UTF-8"),
-					"HmacSHA256");
-			sha256_HMAC.init(secret_key);
-			String encodeContent=  Hex.encodeHexString(sha256_HMAC.doFinal(content.getBytes("UTF-8")));
-			return StringUtils.equalsIgnoreCase(hmac, encodeContent);
-		} catch (Exception ex) {
-			logger.error(ex);
-			return false;
-		}
+
+	private void uninstall(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		String companyCode = request.getParameter("companyCode");
+		this.oauthDataRepository.deleteByCompanyCode(companyCode);
+		response.sendRedirect("/");
 	}
-	
-	private String getInstallAuthorizeUrl(String sapanywhere){
-		return String.format("%s/oauth/authorize?response_type=code&client_id=%s&scope=%s&redirect_uri=%s",
-				sapanywhere, 
-				this.appProperties.getAppId(),
-				this.appProperties.getAppScope(), 
-				this.appProperties.getInstallCallbackUrl());
-	}
-	
-	private boolean verifyAppConfiguration(){
-		if(StringUtils.isEmpty(this.appProperties.getAppId())){
-			logger.error("You havn't configuration your app id");
-			return false;
-		}
-		
-		if(StringUtils.isEmpty(this.appProperties.getAppScope())){
-			logger.error("You havn't configuration your app scope");
-			return false;
-		}
-		
-		if(StringUtils.isEmpty(this.appProperties.getAppSecret())){
-			logger.error("You havn't configuration your app secret");
-			return false;
-		}
-		
-		if(StringUtils.isEmpty(this.appProperties.getRootCallbackUrl())){
-			logger.error("You havn't configuration your app root callback url");
-			return false;
+
+	private void exchangeToken(HttpServletRequest request,
+			HttpServletResponse response) throws BusinessException, IOException {
+
+		String code = request.getParameter("code");
+		if (StringUtils.isEmpty(code)) {
+			throw new BusinessException(ErrorCode.AUTHORIZE_CODE_NONE);
 		}
 
-		if(StringUtils.isEmpty(this.appProperties.getInstallCallbackUrl())){
-			logger.error("You havn't configuration your app install callback url");
-			return false;
+		TokenInfo oauthToken = this.oauthClient.getTokenInfoByCode(code,
+				this.appProperties.getInstallationUrl());
+
+		UserInfo userInfo = this.apiClient.getUserInfo(oauthToken
+				.getAccessToken());
+
+		OauthData oauthData = this.updateOauthData(oauthToken, userInfo);
+		User user = this.userService.findBySAPAccount(oauthData.getUserEmail());
+		session.setAttribute(SessionNameUtils.OAUTH, oauthData);
+		if (user == null) {
+			response.sendRedirect("/oauth/bind.html");
+		} else {
+			response.sendRedirect("/");
 		}
-		
-		if(StringUtils.isEmpty(this.appProperties.getSapanywhereOpenApiUrl())){
-			logger.error("You havn't configuration SAP Anywhere open Api url");
-			return false;
-		}
-		
-		if(StringUtils.isEmpty(this.appProperties.getSapanywhereIdpUrl())){
-			logger.error("You havn't configuration SAP Anywhere idp url");
-			return false;
-		}
-		
-		return true;
 	}
-	
+
+	private void startAuthorize(HttpServletRequest request,
+			HttpServletResponse response) throws BusinessException, IOException {
+		String purpose = request.getParameter("purpose");
+		String redirectUrl = null;
+		if (StringUtils.equalsIgnoreCase(purpose, PURPOSE_TESTING)) {
+			redirectUrl = this.oauthClient.getTestAuthorizeURL();
+		} else {
+			redirectUrl = this.oauthClient.getAuthorizeURL();
+		}
+
+		response.sendRedirect(redirectUrl);
+	}
 }

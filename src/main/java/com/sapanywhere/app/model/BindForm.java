@@ -3,19 +3,30 @@ package com.sapanywhere.app.model;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.validation.BindingResult;
+import org.thymeleaf.util.StringUtils;
 
+import com.sapanywhere.app.entity.OauthData;
 import com.sapanywhere.app.entity.User;
 
-public class BindForm extends BaseForm{
-	private static final String FORMNAME = "bindForm";
-	
+
+public class BindForm extends BaseForm {
+	public static final String FORM_NAME = "bindForm";
+
+	public BindForm() {
+
+	}
+
+	public BindForm(OauthData oauthData) {
+		this.sapAccount = oauthData.getUserEmail();
+		this.email = oauthData.getUserEmail();
+	}
+
 	@NotNull
 	@Size(min = 4, max = 30)
 	private String sapAccount;
-	
+
 	@NotNull
 	@Size(min = 4, max = 30)
 	private String firstName;
@@ -74,8 +85,7 @@ public class BindForm extends BaseForm{
 	public void setRepeatPassword(String repeatPassword) {
 		this.repeatPassword = repeatPassword;
 	}
-	
-	
+
 	public String getSapAccount() {
 		return sapAccount;
 	}
@@ -84,7 +94,7 @@ public class BindForm extends BaseForm{
 		this.sapAccount = sapAccount;
 	}
 
-	public User parse(){
+	public User parse() {
 		User user = new User();
 		user.setSapAccount(this.sapAccount);
 		user.setFirstName(this.firstName);
@@ -96,18 +106,35 @@ public class BindForm extends BaseForm{
 
 	@Override
 	public void onValid(BindingResult result) {
-		if(result.hasErrors()){
+		if (result.hasErrors()) {
 			return;
 		}
-		
-		if(StringUtils.equals(this.password, this.repeatPassword)){
-			this.AddFieldError(
-					result,
-					FORMNAME,
-					"repeatPassword",
-					new String[] { "bind.error.passwordnotmatch" },
-					null);
+
+		if (!StringUtils.equals(this.password, this.repeatPassword)) {
+			this.AddFieldError(result, FORM_NAME, "repeatPassword",
+					new String[] { "bind.error.passwordnotmatch" }, null);
 		}
-		
+
+	}
+
+	public void onValid(BindingResult result, OauthData oauthData) {
+		if (!StringUtils.equalsIgnoreCase(oauthData.getUserEmail(),
+				this.getSapAccount())) {
+
+			this.AddFieldError(result, FORM_NAME, "sapAccount",
+					new String[] { "bind.error.sapaccountnotmatch" }, null);
+			return;
+		}
+
+		this.onValid(result);
+	}
+	
+	public void addFieldError(BindingResult result,String fieldName,String errorCode){
+		this.AddFieldError(
+				result,
+				FORM_NAME,
+				fieldName,
+				new String[] { errorCode },
+				null);
 	}
 }

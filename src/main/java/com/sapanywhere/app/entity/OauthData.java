@@ -23,6 +23,8 @@ public class OauthData {
     private String userPhone;
     private long expiration;
     private int tenantId;
+    private String userCode;
+	private String companyCode;
     
 	public long getId() {
 		return id;
@@ -83,5 +85,17 @@ public class OauthData {
 	}
 	public void setTenantId(int tenantId) {
 		this.tenantId = tenantId;
+	}
+	public String getUserCode() {
+		return userCode;
+	}
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+	public String getCompanyCode() {
+		return companyCode;
+	}
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
 	}
 }

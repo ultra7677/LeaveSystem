@@ -9,18 +9,17 @@
 <link rel="stylesheet" th:href="@{/css/register.css}"></link>
 </head>
 <body>
-	<nav class="navbar navbar-default"></nav>
 	<div class="panel panel-default action-panel">
 		<div class="panel-heading" th:text="#{bind.form.title}"></div>
 		<div class="panel-body">
-			<form class="panel-form" action="#" th:action="@{/user/register}" th:object="${registerForm}" method="POST">
+			<form class="panel-form" action="#" th:action="@{/oauth/userBind}" th:object="${bindForm}" method="POST">
 				<ul class="form-error-message" th:if="${#fields.hasGlobalErrors()}"> 
 					<li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
 				</ul>
-				<div class="input-field-group" th:classappend="${#fields.hasErrors('firstName')}? 'error' : ''">
+				<div class="input-field-group" th:classappend="${#fields.hasErrors('sapAccount')}? 'error' : ''">
 					<div class="input-label " th:text="#{bind.form.label.sapAccount}"></div>
-					<input name="firstName" class="input-field " type="text" th:field="*{firstName}" readonly th:placeholder="#{bind.form.placeholder.sapAccount}" />
-					<div class="input-field-error-message" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+					<input name="firstName" class="input-field " type="text" th:field="*{sapAccount}" readonly="readonly" th:placeholder="#{bind.form.placeholder.sapAccount}" />
+					<div class="input-field-error-message" th:if="${#fields.hasErrors('sapAccount')}" th:errors="*{sapAccount}"></div>
 				</div>
 				
 				<div class="input-field-group" th:classappend="${#fields.hasErrors('firstName')}? 'error' : ''">

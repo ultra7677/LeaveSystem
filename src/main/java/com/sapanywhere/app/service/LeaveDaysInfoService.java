@@ -46,6 +46,17 @@ public class LeaveDaysInfoService {
 		this.leaveDaysInfoRepository.save(days);
 	}
 	
+	public void save(User user,LeaveTypeRule rule){
+		//LeaveDaysInfo days = this.leaveDaysInfoRepository.findOne(rule.getId());
+		for(LeaveDaysInfo days : this.leaveDaysInfoRepository.findAllByUserAndType(user, rule.getType())){
+			days.setYear(LocalDate.now().getYear());
+			days.setType(rule.getType());
+			days.setUser(user);
+			days.setDays(rule.getBaseDays());
+			this.leaveDaysInfoRepository.save(days);
+		}
+	}
+	
 	public List<LeaveInfo> findMyLeaveInfoThisYear(User user, WorkHours workHours){
 		List<LeaveInfo> leaveInfos = new ArrayList<LeaveInfo>();
 		List<LeaveDaysInfo> days = this.leaveDaysInfoRepository.findAllByUserAndYear(user,LocalDate.now().getYear());

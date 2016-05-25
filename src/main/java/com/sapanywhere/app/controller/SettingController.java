@@ -187,7 +187,14 @@ public class SettingController {
 			leaveTypeRule.setMaxDays(leaveTypeRuleForm.getMaxDays());
 			leaveTypeRule.setType(leaveType);
 			this.leaveTypeRuleRepository.save(leaveTypeRule);	
+			
+			// update LeaveDaysInfo in db
+			for(User user: this.userService.findAll()){
+				this.leaveDaysInfoService.save(user,leaveTypeRule);
+			}
+			
 		}
+		
 		return "redirect:/setting.html";
 	}
 }

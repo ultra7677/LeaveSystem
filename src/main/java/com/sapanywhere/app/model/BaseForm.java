@@ -21,4 +21,8 @@ public abstract class BaseForm {
 				null);
 		result.addError(error);
 	}
+	
+	public void addError(BindingResult result,String errorCode){
+		result.reject(errorCode);
+	}
 }
